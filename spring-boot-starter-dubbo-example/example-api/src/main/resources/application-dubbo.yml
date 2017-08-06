@@ -1,0 +1,100 @@
+server:
+  port: 0
+  
+logging:
+  level:
+    root: info
+    org.springframework: warn
+    org.apache.zookeeper: warn
+    com.alibaba.dubbo: warn
+
+dubbo:
+#####################################################注册中心###############################################################
+  registry:
+    protocol: zookeeper   # 注册中心支持的协议 包括 dubbo,multicast,zookeeper,redis 默认是zookeeper
+    address: 127.0.0.1
+    port: 2181
+    client: zkclient # zookeeper 支持客户端包括 curator和zkclient,如果不配置，默认使用curator 
+    register: true
+    session: -1
+#    check: 
+#    cluster: 
+#    default: 
+#    dynamic: 
+#    file: 
+#    group:
+#    username:  
+#    password: 
+#    server: 
+#    subscribe: 
+#    timeout: 
+#    transporter: 
+#    version: 
+#    parameters:
+#####################################################注册中心###############################################################
+
+#####################################################监控中心###############################################################
+#  monitor:
+#    protocol:
+#    address:  
+#    username: 
+#    password: 
+#    version: 
+#    group: 
+#    default: true
+#    parameters:
+#####################################################监控中心###############################################################
+
+#####################################################模块信息###############################################################
+#  module:
+#    default: 
+#    name: 
+#    organization: 
+#    owner: 
+#    version: 
+#####################################################模块信息###############################################################
+
+#####################################################协议信息###############################################################
+  protocols:
+    - name: dubbo
+      serialization: nativejava
+#    - name: dubbo
+#      serialization: hessian2
+#    - name: dubbo
+#      serialization: fastjson
+#    - name: dubbo
+#      serialization: dubbo
+    - name: rmi
+#    - name: http
+#    - name: hessian
+#      
+#    - name: webservice
+#      accepts: 
+#      accesslog: 
+#      buffer: 
+#      charset: 
+#      client: 
+#      codec: 
+#      contextpath: 
+#      default: 
+#      dispatcher: 
+#      exchanger: 
+#      heartbeat: 
+#      host: 
+#      iothreads: 
+#      networker: 
+#      payload: 
+#      prompt: 
+#      queues: 
+#      register: 
+#      serialization: 
+#      server: 
+#      status: 
+#      telnet: 
+#      threadpool: 
+#      threads: 
+#      transporter: 
+#      parameters:
+#      port: 
+#####################################################协议信息###############################################################
+  
