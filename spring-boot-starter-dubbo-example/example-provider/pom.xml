@@ -3,14 +3,14 @@
   <parent>
     <groupId>com.halober</groupId>
     <artifactId>spring-boot-starter-dubbo-example</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </parent>
   <artifactId>example-provider</artifactId>
   <dependencies>
   	<dependency>
 	    <groupId>com.halober</groupId>
 	  	<artifactId>example-api</artifactId>
-	    <version>1.0.0</version>
+	    <version>1.0.1</version>
   	</dependency>
   </dependencies>
 	<build>

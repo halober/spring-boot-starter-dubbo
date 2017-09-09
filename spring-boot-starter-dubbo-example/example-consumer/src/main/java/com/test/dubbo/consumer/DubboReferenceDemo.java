@@ -52,7 +52,11 @@ public class DubboReferenceDemo implements CommandLineRunner {
 		System.err.println("list=" + bidService.toList(1, "22", true, 'b'));
 		User user = bidService.getUser(new User(11,"张三","张三的密码"));
 		System.err.println(user);
-		bidService.throwThrowable();
+		try {
+			bidService.throwThrowable();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 	}
 
 
