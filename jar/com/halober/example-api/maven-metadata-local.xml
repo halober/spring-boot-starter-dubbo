@@ -3,10 +3,10 @@
   <groupId>com.halober</groupId>
   <artifactId>example-api</artifactId>
   <versioning>
-    <release>1.0.0</release>
+    <release>1.0.1</release>
     <versions>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
     </versions>
-    <lastUpdated>20170806035110</lastUpdated>
+    <lastUpdated>20170909141623</lastUpdated>
   </versioning>
 </metadata>

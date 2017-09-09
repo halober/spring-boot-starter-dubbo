@@ -1,0 +1,5 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Sat Sep 09 22:15:15 CST 2017
+spring-boot-starter-dubbo-1.0.1-sources.jar>=
+spring-boot-starter-dubbo-1.0.1.jar>=
+spring-boot-starter-dubbo-1.0.1.pom>=
