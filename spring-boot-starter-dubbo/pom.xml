@@ -17,7 +17,7 @@
 		<version>1.5.6.RELEASE</version>
 		<relativePath />
 	</parent>
-	
+ 
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -41,6 +41,34 @@
         </developer>
     </developers>
     
+
+	<repositories>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -50,6 +78,7 @@
 		<zkclient.version>0.5</zkclient.version>
 		<netty.version>3.2.10.Final</netty.version>
 	</properties>
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -129,7 +158,7 @@
 			<scope>provided</scope>
 		</dependency>
 		
-		<!-- 由于dubbo必须依赖zkclient，否则无法使用curator -->
+		<!-- zkclient  -->
 		<dependency>
 		    <groupId>com.101tec</groupId>
 		    <artifactId>zkclient</artifactId>
@@ -139,7 +168,7 @@
 			<groupId>com.alibaba</groupId>
 			<artifactId>dubbo</artifactId>
 		</dependency>
-		<!-- dubbo -->
+		<!-- spring-boot-configuration-processor -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
