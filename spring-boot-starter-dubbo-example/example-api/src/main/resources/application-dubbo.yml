@@ -56,10 +56,10 @@ dubbo:
 
 #####################################################协议信息###############################################################
   protocols:
-    - name: dubbo
-      serialization: nativejava
 #    - name: dubbo
-#      serialization: hessian2
+#      serialization: nativejava
+    - name: dubbo
+      serialization: hessian2
 #    - name: dubbo
 #      serialization: fastjson
 #    - name: dubbo
