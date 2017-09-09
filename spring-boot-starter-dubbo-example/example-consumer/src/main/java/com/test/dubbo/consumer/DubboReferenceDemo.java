@@ -33,29 +33,13 @@ public class DubboReferenceDemo implements CommandLineRunner {
 		System.err.println(a + "+" + b + "=" + bidService.add(a, f));
 		System.err.println(a + "+" + b + "=" + bidService.add(e, b));
 		System.err.println(a + "+" + b + "=" + bidService.add(f, b));
-
-		System.err.println(a + "+" + b + "=" + bidService.add(a, b));
-		System.err.println(a + "+" + b + "=" + bidService.add(a, c));
-		System.err.println(a + "+" + b + "=" + bidService.add(a, d));
-		System.err.println(a + "+" + b + "=" + bidService.add(a, e));
-		System.err.println(a + "+" + b + "=" + bidService.add(a, f));
-		System.err.println(a + "+" + b + "=" + bidService.add(e, b));
-		System.err.println(a + "+" + b + "=" + bidService.add(f, b));
-
-		System.err.println(a + "+" + b + "=" + bidService.add(a, b));
-		System.err.println(a + "+" + b + "=" + bidService.add(a, c));
-		System.err.println(a + "+" + b + "=" + bidService.add(a, d));
-		System.err.println(a + "+" + b + "=" + bidService.add(a, e));
-		System.err.println(a + "+" + b + "=" + bidService.add(a, f));
-		System.err.println(a + "+" + b + "=" + bidService.add(e, b));
-		System.err.println(a + "+" + b + "=" + bidService.add(f, b));
 		System.err.println("list=" + bidService.toList(1, "22", true, 'b'));
 		User user = bidService.getUser(new User(11,"张三","张三的密码"));
 		System.err.println(user);
 		try {
 			bidService.throwThrowable();
 		} catch (Throwable e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 	}
 
