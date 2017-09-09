@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>spring-boot-starter-dubbo</name>
-	<description>Demo project for Spring Boot</description>
+	<description>本项目完全根据spring-boot和dubbo原理实现的整合，支持dubbo所有配置项。新手使用可以得心应手，老手要dubbo的高级用法，他也可以完美支持。这个项目的配置比官方提供的配置方式更友好。</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -17,7 +17,30 @@
 		<version>1.5.6.RELEASE</version>
 		<relativePath />
 	</parent>
-
+	
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    
+    <scm>
+        <tag>master</tag>
+        <url>git@git.oschina.net:lei0719/spring-boot-starter-dubbo.git</url>
+        <connection>scm:git:git@git.oschina.net:lei0719/spring-boot-starter-dubbo.git</connection>
+        <developerConnection>scm:git:git@git.oschina.net:lei0719/spring-boot-starter-dubbo.git</developerConnection>
+    </scm>
+    
+    <developers>
+        <developer>
+            <name>胡生</name>
+            <email>619137943@qq.com</email>
+            <organization>com.halober</organization>
+        </developer>
+    </developers>
+    
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
