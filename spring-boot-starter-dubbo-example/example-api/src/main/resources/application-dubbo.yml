@@ -64,10 +64,10 @@ dubbo:
 #      serialization: fastjson
 #    - name: dubbo
 #      serialization: dubbo
-    - name: rmi
+#    - name: rmi
 #    - name: http
 #    - name: hessian
-#      
+#    - name: thrift
 #    - name: webservice
 #      accepts: 
 #      accesslog: 

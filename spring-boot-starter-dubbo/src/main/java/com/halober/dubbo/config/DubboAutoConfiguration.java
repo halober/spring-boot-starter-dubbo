@@ -1,5 +1,6 @@
 package com.halober.dubbo.config;
 
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -23,17 +24,19 @@ import com.alibaba.dubbo.config.ProviderConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.config.ServiceConfig;
-import com.alibaba.dubbo.config.spring.AnnotationBean;
 
 @Configuration
 public class DubboAutoConfiguration extends AnnotationBean implements EnvironmentAware {
 
-	static Logger log = LoggerFactory.getLogger(DubboAutoConfiguration.class);
+	public DubboAutoConfiguration() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+		super();
+	}
+
+	static Logger logger = LoggerFactory.getLogger(DubboAutoConfiguration.class);
 
 	private static final long serialVersionUID = 1L;
 
-	ConfigurableEnvironment environment;
-
+	private ConfigurableEnvironment environment;
 	@Override
 	public void setEnvironment(Environment environment) {
 		this.environment = (ConfigurableEnvironment) environment;
@@ -69,27 +72,28 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		this.registerConsumer(dubboProperties.getConsumer(), beanFactory);
 		this.registerReferences(dubboProperties.getReferences(), beanFactory);
 		this.registerServices(dubboProperties.getServices(), beanFactory);
+		super.postProcessBeanFactory(beanFactory);
 	}
 
 	private void registerConsumer(ConsumerConfig consumer, ConfigurableListableBeanFactory beanFactory) {
 		if (consumer != null)
 			beanFactory.registerSingleton("consumerConfig", consumer);
 		else
-			log.debug("dubbo 没有配置默认的消费者参数");
+			logger.debug("dubbo 没有配置默认的消费者参数");
 	}
 
 	private void registerProvider(ProviderConfig provider, ConfigurableListableBeanFactory beanFactory) {
 		if (provider != null)
 			beanFactory.registerSingleton("providerConfig", provider);
 		else
-			log.debug("dubbo 没有配置默认的生成者参数");
+			logger.debug("dubbo 没有配置默认的生成者参数");
 	}
 
 	private void registerModule(ModuleConfig module, ConfigurableListableBeanFactory beanFactory) {
 		if (module != null)
 			beanFactory.registerSingleton("moduleConfig", module);
 		else
-			log.debug("dubbo 没有配置模块信息");
+			logger.debug("dubbo 没有配置模块信息");
 	}
 
 	private void registerReferences(List<ReferenceConfig<?>> references, ConfigurableListableBeanFactory beanFactory) {
@@ -99,7 +103,7 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		for (ReferenceConfig<?> referenceConfig : references) {
 			String beanName = referenceConfig.getId() + "-ReferenceConfig";
 			beanFactory.registerSingleton(beanName, referenceConfig);
-			log.debug("注册调用信息{} 完毕", beanName);
+			logger.debug("注册调用信息{} 完毕", beanName);
 		}
 	}
 
@@ -110,7 +114,7 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		for (ServiceConfig<?> serviceConfig : services) {
 			String beanName = serviceConfig.getId() + "-ServiceConfig";
 			beanFactory.registerSingleton(beanName, serviceConfig);
-			log.debug("注册服务信息{} 完毕", beanName);
+			logger.debug("注册服务信息{} 完毕", beanName);
 		}
 	}
 
@@ -118,22 +122,21 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		if (monitorConfig != null)
 			beanFactory.registerSingleton("monitorConfig", monitorConfig);
 		else
-			log.debug("dubbo 没有配置服务监控中心");
+			logger.debug("dubbo 没有配置服务监控中心");
 	}
 
 	private void registerRegistry(RegistryConfig registryConfig, ConfigurableListableBeanFactory beanFactory) {
 		if (registryConfig != null)
 			beanFactory.registerSingleton("registryConfig", registryConfig);
 		else
-			log.info("dubbo 没有配置服务注册中心");
+			logger.info("dubbo 没有配置服务注册中心");
 	}
 
 	private void registerThis(String annotationPackages, ConfigurableListableBeanFactory beanFactory) {
 		if (StringUtils.isEmpty(annotationPackages))
-			log.warn(" dubbo没有配置注解服务所在的目录");
-		super.setPackage(annotationPackages);
+			logger.warn(" dubbo没有配置注解服务所在的目录");
+		this.setPackage(annotationPackages);
 		super.setId("dubboAnnotationPackageS");
-		super.postProcessBeanFactory(beanFactory);
 	}
 
 	private void registerApplication(ApplicationConfig applicationConfig, ConfigurableListableBeanFactory beanFactory) {
@@ -143,13 +146,13 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 				name="application";
 			beanFactory.registerSingleton(name, applicationConfig);
 		}else{
-			log.warn("dubbo 没有配置服务名信息");
+			logger.warn("dubbo 没有配置服务名信息");
 		}
 	}
 
 	private void registerProtocols(List<ProtocolConfig> protocols, ConfigurableListableBeanFactory beanFactory) {
 		if (protocols == null || protocols.isEmpty()) {
-			log.debug("dubbo 没有配置协议,将使用默认协议");
+			logger.debug("dubbo 没有配置协议,将使用默认协议");
 			return;
 		}
 		for (ProtocolConfig protocolConfig : protocols) {
@@ -157,8 +160,8 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 			if(protocolConfig.getPort()==null||protocolConfig.getPort()==0)
 				protocolConfig.setPort(SocketUtils.findAvailableTcpPort(53600, 53688));
 			beanFactory.registerSingleton(beanName, protocolConfig);
-			log.debug("注册协议信息{} 完毕", beanName + "-ProtocolConfig");
+			logger.debug("注册协议信息{} 完毕", beanName + "-ProtocolConfig");
 		}
 	}
-
+	
 }

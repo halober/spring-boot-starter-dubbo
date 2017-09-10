@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.halober.dubbo.annotation.Inject;
 import com.test.dubbo.model.User;
 import com.test.dubbo.service.MathService;
 
@@ -11,7 +12,9 @@ import com.test.dubbo.service.MathService;
 public class DubboReferenceDemo implements CommandLineRunner {
 
 	@Reference
-	private MathService bidService;
+	public MathService service;
+	@Inject
+	public MathService bidService;
 
 	Integer a=1;
 	Integer b=2;
@@ -23,9 +26,9 @@ public class DubboReferenceDemo implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		
 		System.err.println(a+" "+b+" "+c+" "+d+" "+e+" "+f);
 
+		System.err.println("注入的是同一个对象："+bidService.equals(service));
 		System.err.println(a + "+" + b + "=" + bidService.add(a, b));
 		System.err.println(a + "+" + b + "=" + bidService.add(a, c));
 		System.err.println(a + "+" + b + "=" + bidService.add(a, d));
