@@ -19,7 +19,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 public @interface Inject {
 	/**
 	 * 如果从spring容器没有能够找到的话，使用该配置到dubbo中找
-	 * @return
+	 * @return dubbo的注入参数
 	 */
 	Reference value() default @Reference();
 }
