@@ -59,7 +59,7 @@ public class DubboProperties {
 	private List<ReferenceConfig<?>> references;
 	
 	public DubboProperties() {
-		registry.setClient("curator");
+		registry.setClient("zkclient");
 		registry.setAddress("127.0.0.1");
 		registry.setPort(2181);
 		registry.setProtocol("zookeeper");
