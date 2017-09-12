@@ -18,17 +18,16 @@ spring:
       register: true
       session: -1
       check: false
-      cluster: 
-      dynamic: 
-      file: 
-      username:  
-      password: 
-      subscribe: 
-      timeout: 
-      version: 
-      wait: 
-      id: 
-      transport: netty
+#      dynamic: 
+#      file: 
+#      username:  
+#      password: 
+#      subscribe: 
+#      timeout: 
+#      version: 
+#      wait: 
+#      id: 
+#      transport: netty
 #####################################################注册中心###############################################################
   
 #####################################################监控中心###############################################################
