@@ -4,12 +4,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.halober.dubbo.annotation.Inject;
+import com.reger.dubbo.annotation.Inject;
 import com.test.dubbo.model.User;
 import com.test.dubbo.service.MathService;
 
 @Component
-public class DubboReferenceDemo implements CommandLineRunner {
+public class DubboReferenceConsumer implements CommandLineRunner {
 
 	@Reference
 	public MathService service;

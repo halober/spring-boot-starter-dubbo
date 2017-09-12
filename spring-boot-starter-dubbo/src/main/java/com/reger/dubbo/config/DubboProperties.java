@@ -16,7 +16,7 @@ import com.alibaba.dubbo.config.ServiceConfig;
 
 @ConfigurationProperties(DubboProperties.targetName)
 public class DubboProperties {
-	static final String targetName = "dubbo";
+	static final String targetName = "spring.dubbo";
 	/**
 	 * 应用基础信息
 	 */
