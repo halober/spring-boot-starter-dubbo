@@ -7,28 +7,73 @@ spring:
       - dubbo
       
   dubbo:
-    application:
-      name: demo-consumer
-      owner: laolei
-      
 #####################################################扫描注解的包###############################################################
     base-package: com.test.dubbo.consumer
 #####################################################扫描注解的包###############################################################
         
+    application:
+      name: demo-consumer
+      owner: laolei
+      architecture:
+      compiler: javassist
+      environment: develop
+      logger: slf4j
+      organization: reger
+      version: 0.0.1
+      
 #####################################################消费者默认配置###############################################################
     consumer:
       lazy: true
       timeout: 1000 
       check: true
-      
+#      filter: 
+#      actives: 
+#      async: 
+#      cache:
+#      cluster: 
+#      connections: 
+#      generic: 
+#      init: 
+#      layer: 
+#      listener: 
+#      loadbalance: 
+#      owner: 
+#      proxy: 
+#      registry: 
+#      retries: 
+#      validation: 
+        
 #####################################################消费者默认配置###############################################################
-  
+      
+        
 #####################################################消费者配置###############################################################
 #    references:
-#      - client: 
+#      - actives: 
+#        async:
+#        cache:
+#        check:
+#        client: 
+#        cluster: 
+#        connections: 
+#        filter: 
+#        generic:
+#        group: 
+#        id: 
+#        init:
 #        interface: 
-#        interface-class: 
+#        layer: 
+#        listener: 
+#        loadbalance: 
+#        mock:
+#        owner: 
 #        protocol: 
+#        proxy:
+#        registry: 
+#        retries: 
+#        stub:
+#        timeout: 
 #        url: 
+#        validation:
+#        version: 
 #        
 ####################################################消费者配置###############################################################

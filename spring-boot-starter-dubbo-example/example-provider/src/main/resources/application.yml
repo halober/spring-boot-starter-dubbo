@@ -16,8 +16,26 @@ spring:
 #####################################################发布者通用配置信息###############################################################
     provider:
       retries: -1
-#      filter: 
-#      exchanger: 
+#      accesslog:
+#      delay: 
+#      deprecated: 
+#      document: 
+#      dynamic: 
+#      executes: 
+#      group: 
+#      id: 
+#      layer: 
+#      listener: 
+#      mock: 
+#      owner: 
+#      path: 
+#      protocol: 
+#      proxy: 
+#      registry: 
+#      stub: 
+#      token: 
+#      version: 
+#      weight: 
 #      accepts: 
 #      actives: 
 #      async: 
@@ -27,41 +45,54 @@ spring:
 #      cluster: 
 #      codec: 
 #      connections: 
-#      contextpath: 
 #      default: 
-#      dispatcher: 
 #      host: 
 #      iothreads: 
 #      loadbalance: 
-#      networker: 
 #      payload: 
-#      port: 
-#      prompt: 
 #      queues: 
 #      serialization: 
 #      server: 
-#      status: 
 #      telnet: 
 #      threadpool: 
 #      threads: 
 #      timeout: 
-#      transporter: 
-#      wait:
+#      filter:  
 #####################################################发布者通用配置信息###############################################################
-  
+        
 ##################################################发布者配置信息###############################################################
 #    services:
-#      - interface-class: 
+#      - provider: 
+#        accesslog:
+#        async:
+#        cluster: 
+#        connections: 
+#        contextpath: 
+#        delay: 
+#        deprecated:
+#        document: 
+#        dynamic:
+#        executes: 
+#        filter: 
+#        group: 
 #        interface: 
-#        exported: 
-#        methods:
-#          - 
+#        layer: 
+#        listener: 
+#        loadbalance: 
+#        mock:
+#        owner: 
 #        path: 
-#        ref: 
-#        unexported: 
-#        exported-urls:
-#          - 
-#        generic: 
+#        protocol: 
+#        proxy: 
+#        ref:
+#        register:
+#        registry: 
+#        retries: 
+#        stub:
+#        timeout: 
+#        token:
+#        version: 
+#        weight:  
 #        
 ##################################################发布者配置信息###############################################################
   

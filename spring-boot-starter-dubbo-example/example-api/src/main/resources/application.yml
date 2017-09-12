@@ -32,19 +32,12 @@ spring:
   
 #####################################################监控中心###############################################################
 #    monitor:
-#      protocol:
-#      address:  
-#      username: 
-#      password: 
-#      version: 
-#      group: 
-#      default: true
-#      parameters:
+#      address: 
+#      protocol: 
 #################################################监控中心###############################################################
   
 #####################################################模块信息###############################################################
 #    module:
-#      default: 
 #      name: 
 #      organization: 
 #      owner: 
@@ -56,6 +49,28 @@ spring:
     protocol:
       name: dubbo
       serialization: hessian2
+#      accepts: 
+#      accesslog:
+#      buffer: 
+#      charset: 
+#      client: 
+#      codec: 
+#      contextpath: 
+#      dispatcher: 
+#      heartbeat: 
+#      host: 
+#      id: 
+#      iothreads: 
+#      path: 
+#      payload: 
+#      port: 
+#      queues: 
+#      register:
+#      server: 
+#      telnet: 
+#      threadpool: 
+#      threads: 
+#      transporter: 
       
 #    protocols:
 #      - name: dubbo
@@ -71,32 +86,5 @@ spring:
 #      - name: hessian
 #      - name: thrift
 #      - name: webservice
-#        accepts: 
-#        accesslog: 
-#        buffer: 
-#        charset: 
-#        client: 
-#        codec: 
-#        contextpath: 
-#        default: 
-#        dispatcher: 
-#        exchanger: 
-#        heartbeat: 
-#        host: 
-#        iothreads: 
-#        networker: 
-#        payload: 
-#        prompt: 
-#        queues: 
-#        register: 
-#        serialization: 
-#        server: 
-#        status: 
-#        telnet: 
-#        threadpool: 
-#        threads: 
-#        transporter: 
-#        parameters:
-#        port: 
 ####################################################协议信息###############################################################
   
