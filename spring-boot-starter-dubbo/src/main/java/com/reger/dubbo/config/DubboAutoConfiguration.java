@@ -1,6 +1,7 @@
 package com.reger.dubbo.config;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -62,9 +63,15 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		DubboProperties dubboProperties = this.getPropertiesConfigurationBean(DubboProperties.targetName, DubboProperties.class);
+		List<ProtocolConfig> protocols = dubboProperties.getProtocols();
+		if(protocols==null)
+			protocols=new ArrayList<>();
+		if(dubboProperties.getProtocol()!=null)
+			protocols.add(dubboProperties.getProtocol());
+		
 		this.registerThis(dubboProperties.getBasePackage(), beanFactory);
 		this.registerApplication(dubboProperties.getApplication(), beanFactory);
-		this.registerProtocols(dubboProperties.getProtocols(), beanFactory);
+		this.registerProtocols(protocols, beanFactory);
 		this.registerRegistry(dubboProperties.getRegistry(), beanFactory);
 		this.registerMonitor(dubboProperties.getMonitor(), beanFactory);
 		this.registerModule(dubboProperties.getModule(), beanFactory);
@@ -150,17 +157,25 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		}
 	}
 
+	private void registerProtocol(ProtocolConfig protocol, ConfigurableListableBeanFactory beanFactory) {
+		if (protocol == null ) {
+			logger.debug("dubbo 没有配置协议,将使用默认协议");
+			return;
+		}
+		String beanName = protocol.getName();
+		if(protocol.getPort()==null||protocol.getPort()==0)
+			protocol.setPort(SocketUtils.findAvailableTcpPort(53600, 53688));
+		beanFactory.registerSingleton(beanName, protocol);
+		logger.debug("注册协议信息{} 完毕", beanName + "-ProtocolConfig");
+	}
+	
 	private void registerProtocols(List<ProtocolConfig> protocols, ConfigurableListableBeanFactory beanFactory) {
 		if (protocols == null || protocols.isEmpty()) {
 			logger.debug("dubbo 没有配置协议,将使用默认协议");
 			return;
 		}
-		for (ProtocolConfig protocolConfig : protocols) {
-			String beanName = protocolConfig.getName();
-			if(protocolConfig.getPort()==null||protocolConfig.getPort()==0)
-				protocolConfig.setPort(SocketUtils.findAvailableTcpPort(53600, 53688));
-			beanFactory.registerSingleton(beanName, protocolConfig);
-			logger.debug("注册协议信息{} 完毕", beanName + "-ProtocolConfig");
+		for (ProtocolConfig protocol : protocols) {
+			 this.registerProtocol(protocol, beanFactory);
 		}
 	}
 	

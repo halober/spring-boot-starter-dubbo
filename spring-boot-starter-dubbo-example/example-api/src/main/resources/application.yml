@@ -18,19 +18,17 @@ spring:
       register: true
       session: -1
       check: false
-#      cluster: 
-#      default: 
-#      dynamic: 
-#      file: 
-#      group:
-#      username:  
-#      password: 
-#      server: 
-#      subscribe: 
-#      timeout: 
-#      transporter: 
-#      version: 
-#      parameters:
+      cluster: 
+      dynamic: 
+      file: 
+      username:  
+      password: 
+      subscribe: 
+      timeout: 
+      version: 
+      wait: 
+      id: 
+      transport: netty
 #####################################################注册中心###############################################################
   
 #####################################################监控中心###############################################################
@@ -55,11 +53,16 @@ spring:
 #####################################################模块信息###############################################################
   
 #####################################################协议信息###############################################################
-    protocols:
+    
+    protocol:
+      name: dubbo
+      serialization: hessian2
+      
+#    protocols:
 #      - name: dubbo
 #        serialization: nativejava
-      - name: dubbo
-        serialization: hessian2
+#      - name: dubbo
+#        serialization: hessian2
 #      - name: dubbo
 #        serialization: fastjson
 #      - name: dubbo

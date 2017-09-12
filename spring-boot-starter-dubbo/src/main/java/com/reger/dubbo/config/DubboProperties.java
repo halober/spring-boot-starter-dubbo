@@ -48,6 +48,10 @@ public class DubboProperties {
 	/**
 	 * 应用使用的协议栈
 	 */
+	private ProtocolConfig protocol;
+	/**
+	 * 应用使用的协议栈(当需要配置超过一个时使用)
+	 */
 	private List<ProtocolConfig> protocols;
 	/**
 	 * 生产者发布服务
@@ -107,6 +111,15 @@ public class DubboProperties {
 	public void setConsumer(ConsumerConfig consumer) {
 		this.consumer = consumer;
 	}
+	
+	public ProtocolConfig getProtocol() {
+		return protocol;
+	}
+
+	public void setProtocol(ProtocolConfig protocol) {
+		this.protocol = protocol;
+	}
+
 	public List<ProtocolConfig> getProtocols() {
 		return protocols;
 	}
