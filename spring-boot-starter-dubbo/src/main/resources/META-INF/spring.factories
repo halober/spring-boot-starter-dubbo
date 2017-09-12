@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.halober.dubbo.config.DubboAutoConfiguration
+com.reger.dubbo.config.DubboAutoConfiguration

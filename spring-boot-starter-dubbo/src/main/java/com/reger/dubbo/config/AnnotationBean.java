@@ -1,4 +1,4 @@
-package com.halober.dubbo.config;
+package com.reger.dubbo.config;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -20,7 +20,7 @@ import com.alibaba.dubbo.config.MonitorConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.spring.ReferenceBean;
-import com.halober.dubbo.annotation.Inject;
+import com.reger.dubbo.annotation.Inject;
 
 public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBean {
 

@@ -1,4 +1,4 @@
-package com.halober.dubbo.annotation;
+package com.reger.dubbo.annotation;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;

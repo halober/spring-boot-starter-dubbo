@@ -1,4 +1,4 @@
-package com.halober.dubbo.config;
+package com.reger.dubbo.config;
 
 
 import java.util.List;
