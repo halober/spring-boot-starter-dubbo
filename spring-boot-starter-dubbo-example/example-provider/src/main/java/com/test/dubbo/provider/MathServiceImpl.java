@@ -1,7 +1,7 @@
 package com.test.dubbo.provider;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.alibaba.dubbo.config.annotation.Service;
@@ -19,8 +19,9 @@ public class MathServiceImpl implements MathService {
 
 	@Override
 	public List<Object> toList(Object... args) {
-		List<Object> list = new LinkedList<>();
+		List<Object> list = new ArrayList<>();
 		Collections.addAll(list, args);
+		System.err.println("返回的数据"+list);
 		return list;
 	}
 	@Override
@@ -30,7 +31,7 @@ public class MathServiceImpl implements MathService {
 
 	@Override
 	public User getUser(User user) {
-		System.err.println(user);
+		System.err.println("请求到达  " +user);
 		return user;
 	}
 }
