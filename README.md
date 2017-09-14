@@ -25,7 +25,7 @@ java -jar example-consumer-1.0.1.jar --spring.dubbo.address=127.0.0.1  --spring.
 ```
 4.consumer和provider都有正常调用的日志输出，至此简单示例就运行起来了，也表示你本地的dubbo环境已经可以用了。
 
-5.克隆示例代码，开始你的dubbo之旅。
+5.克隆示例代码，开始`dubbo`之旅。
 ```sh
 git clone https://gitee.com/reger/spring-boot-starter-dubbo.git
 ```  
