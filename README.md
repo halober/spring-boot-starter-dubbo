@@ -170,7 +170,7 @@ public class SpringDubboConfigApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.err.println("服务消费者启动完毕------>>启动完毕");
+        System.err.println("服务调用者------>>启动完毕");
     }
 }
 ```
