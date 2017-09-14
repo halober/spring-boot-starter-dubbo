@@ -366,3 +366,62 @@ spring:
         version: 
         weight:  
 ```
+#### 9.调用者默认的配置（可选配置）
+```yml
+spring:
+  dubbo: 
+    consumer:                   # 公用的消费者配置
+      lazy: true                #
+      timeout: 1000             # 可选 性能调优 远程服务调用超时时间(毫秒) 1.0.16以上版本
+      check: true               # 可选 服务治理 启动时检查提供者是否存在，true报错，false忽略 1.0.16以上版本
+      retries: 2                # 可选 性能调优 远程服务调用重试次数，不包括第一次调用，不需要重试请设为0 1.0.16以上版本
+      filter:                   # 可选 性能调优 服务消费方远程调用过程拦截器名称，多个名称用逗号分隔 2.0.5以上版本
+      actives: 0                # 可选 性能调优 每服务消费者每服务每方法最大并发调用数 2.0.5以上版本
+      async: false              # 可选 性能调优 是否缺省异步执行，不可靠异步，只是忽略返回值，不阻塞执行线程 2.0.0以上版本
+      cache:                    # 可选 服务治理 以调用参数为key，缓存返回结果，可选：lru, threadlocal, jcache等 Dubbo2.1.0及其以上版本支持
+      cluster: failover         # 可选 性能调优 集群方式，可选：failover/failfast/failsafe/failback/forking 2.0.5以上版本
+      connections: 100          # 可选 性能调优 每个服务对每个提供者的最大连接数，rmi、http、hessian等短连接协议支持此配置，dubbo协议长连接不支持此配置 1.0.16以上版本
+      generic: false            # 可选 服务治理 是否缺省泛化接口，如果为泛化接口，将返回GenericService 2.0.0以上版本
+      init: false               # 可选 性能调优 是否在afterPropertiesSet()时饥饿初始化引用，否则等到有人注入或引用该实例时再初始化。 2.0.10以上版本
+      layer:                    # 可选 服务治理 服务调用者所在的分层。如：biz、dao、intl:web、china:acton。 2.0.7以上版本
+      listener:                 # 可选 性能调优 服务消费方引用服务监听器名称，多个名称用逗号分隔 2.0.5以上版本
+      loadbalance: random       # 可选 性能调优 负载均衡策略，可选值：random,roundrobin,leastactive，分别表示：随机，轮循，最少活跃调用 1.0.16以上版本
+      owner:                    # 可选 服务治理 调用服务负责人，用于服务治理，请填写负责人公司邮箱前缀 2.0.5以上版本
+      proxy: javassist          # 可选 性能调优 生成动态代理方式，可选：jdk/javassist 2.0.5以上版本
+      registry:                 # 可选 配置关联 向指定注册中心注册，在多个注册中心时使用，值为spring.dubbo.registry.的id属性，多个注册中心ID用逗号分隔，如果不想将该服务注册到任何registry，可将值设为N/A 2.0.5以上版本
+      retries: 2                # 可选 性能调优 远程服务调用重试次数，不包括第一次调用，不需要重试请设为0 1.0.16以上版本
+      validation:               # 可选 服务治理 是否启用JSR303标准注解验证，如果启用，将对方法参数上的注解进行校验 Dubbo2.1.0及其以上版本支持
+```
+#### 10.调用者配置的列表（由于这个配置一般用不着，就不写描述了）
+```yml
+spring:
+  dubbo: 
+    references:
+      - actives: 
+        async:
+        cache:
+        check:
+        client: 
+        cluster: 
+        connections: 
+        filter: 
+        generic:
+        group: 
+        id: 
+        init:
+        interface: 
+        layer: 
+        listener: 
+        loadbalance: 
+        mock:
+        owner: 
+        protocol: 
+        proxy:
+        registry: 
+        retries: 
+        stub:
+        timeout: 
+        url: 
+        validation:
+        version: 
+```
