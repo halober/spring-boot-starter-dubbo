@@ -194,11 +194,21 @@ spring:
       transport: netty      # 可选 性能调优 网络传输方式，可选mina,netty 2.0.0以上版本
       id:                   # 可选 配置关联 注册中心引用BeanId，可以在<dubbo:service registry="">或<dubbo:reference registry="">中引用此ID 1.0.16以上版本
 ```
-#### 2.监控中心配置参数（非必需配置）
+#### 2.监控中心配置参数（可选配置）
 ```yml
 spring:
   dubbo:
     monitor:                # 监控服务
       address: N/A          # 可选 服务治理 直连监控中心服务器地址，address="10.20.130.230:12080" 1.0.16以上版本
       protocol: dubbo       # 可选 服务治理 监控中心协议，如果为protocol="registry"，表示从注册中心发现监控中心地址，否则直连监控中心。 2.0.9以上版本
+```
+#### 3.模块定义（可选配置）
+```yml
+spring:
+  dubbo:
+    module:                 # 应用模块定义
+      name:                 # 必填 服务治理 当前模块名称，用于注册中心计算模块间依赖关系 2.2.0以上版本
+      organization:         # 可选 服务治理 组织名称(BU或部门)，用于注册中心区分服务来源，此配置项建议不要使用autoconfig，直接写死在配置中，比如china,intl,itu,crm,asc,dw,aliexpress等 2.2.0以上版本
+      owner:                # 可选 服务治理 模块负责人，用于服务治理，请填写负责人公司邮箱前缀 2.2.0以上版本
+      version:              # 可选 服务治理 当前模块的版本 2.2.0以上版本
 ```
