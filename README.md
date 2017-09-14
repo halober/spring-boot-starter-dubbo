@@ -3,7 +3,7 @@
 
 spring-boot-start-dubbo，是spring-boot与dubbo有机结合的桥梁。
 
-根据spring-boot开箱即用的原则实现的spring-boot-start-dubbo，dubbo的使用变得及其简单快捷，容易上。让你从dubbo小白到能正常使用，只需一盏茶的功夫。
+根据`spring-boot`开箱即用的原则实现的spring-boot-start-dubbo，dubbo的使用变得及其简单快捷，容易上。让你从dubbo小白到能正常使用，只需一盏茶的功夫。
 
 使用本项目，你肯定会发现，原来`dubbo`开发如此简单。
 
