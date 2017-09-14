@@ -259,7 +259,7 @@ spring:
 #      - name: thrift
 #      - name: webservice
 ```
-#### 4.应用配置参数
+#### 5.应用配置参数(必须配置)
 ```yml
 spring:
   dubbo: 
