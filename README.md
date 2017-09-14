@@ -79,7 +79,7 @@ public interface DemoService {
     Integer add(Integer a,Integer b);
 }
 ```
-#### 4. 服务发布
+#### 4. 服务提供者
 服务提供者项目中增加业务类
 ```java
 package com.test.dubbo.provider;
