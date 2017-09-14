@@ -24,7 +24,7 @@ java -jar example-consumer-1.0.1.jar --spring.dubbo.address=127.0.0.1  --spring.
 
 5.克隆示例代码，开始`dubbo`之旅。
 ```sh
-git clone https://gitee.com/reger/spring-boot-starter-dubbo.git
+git clone https://gitee.com/reger/spring-boot-starter-dubbo-example.git
 ```  
 ## 快速入门
 #### 1.在maven管理的spring-boot项目中引入依赖,（建议使用spring-boot版本1.5以上,1.5以下未测试过）
