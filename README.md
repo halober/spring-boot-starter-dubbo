@@ -273,3 +273,9 @@ spring:
       organization:           # 可选 服务治理 组织名称(BU或部门)，用于注册中心区分服务来源，此配置项建议不要使用autoconfig，直接写死在配置中，比如china,intl,itu,crm,asc,dw,aliexpress等 2.0.0以上版本
       version:                # 可选 服务治理 当前应用的版本 2.2.0以上版本
 ```
+#### 6.服务扫描的包（使用注解时必须配置）
+```yml
+spring:
+  dubbo: 
+    base-package:             # 提供者service和消费者所在的java包,多个包用逗号分割
+```
