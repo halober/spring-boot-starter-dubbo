@@ -139,7 +139,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringDubboConfigApplication implements CommandLineRunner {
 
     public static void main(String[] args) throws InterruptedException {
-        SpringApplication.run(SpringDubboxConfigApplication.class, args);
+        SpringApplication.run(SpringDubboConfigApplication.class, args);
         TimeUnit.MINUTES.sleep(10); //提供者main线程暂停10分钟等待被调用
         System.err.println("服务提供者------>>服务关闭");
     }
@@ -162,7 +162,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringDubboConfigApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringDubboxConfigApplication.class, args);
+        SpringApplication.run(SpringDubboConfigApplication.class, args);
     }
 
     @Override
