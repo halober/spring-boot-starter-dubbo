@@ -172,7 +172,28 @@ public class SpringDubboConfigApplication implements CommandLineRunner {
 }
 ```
 ## 可用配置项  
-#### 1.注册中心支持的配置参数 （必须配置）
+
+#### 1.应用配置参数(必须配置)
+```yml
+spring:
+  dubbo: 
+    application:
+      name: demo-provider     # 必填 服务治理 当前应用名称，用于注册中心计算应用间依赖关系，注意：消费者和提供者应用名不要一样，此参数不是匹配条件，你当前项目叫什么名字就填什么，和提供者消费者角色无关，比如：kylin应用调用了morgan应用的服务，则kylin项目配成kylin，morgan项目配成morgan，可能kylin也提供其它服务给别人使用，但kylin项目永远配成kylin，这样注册中心将显示kylin依赖于morgan 1.0.16以上版本
+      owner: laolei           # 可选 服务治理 应用负责人，用于服务治理，请填写负责人公司邮箱前缀 2.0.5以上版本
+      architecture:           # 可选 服务治理 用于服务分层对应的架构。如，intl、china。不同的架构使用不同的分层。 2.0.7以上版本
+      compiler: javassist     # 可选 性能优化 Java字节码编译器，用于动态类的生成，可选：jdk或javassist 2.1.0以上版本
+      environment:            # 可选 服务治理 应用环境，如：develop/test/product，不同环境使用不同的缺省值，以及作为只用于开发测试功能的限制条件 2.0.0以上版本
+      logger: slf4j           # 可选 性能优化 日志输出方式，可选：slf4j,jcl,log4j,jdk 2.2.0以上版本
+      organization:           # 可选 服务治理 组织名称(BU或部门)，用于注册中心区分服务来源，此配置项建议不要使用autoconfig，直接写死在配置中，比如china,intl,itu,crm,asc,dw,aliexpress等 2.0.0以上版本
+      version:                # 可选 服务治理 当前应用的版本 2.2.0以上版本
+```
+#### 2.服务扫描的包（使用注解时必须配置）
+```yml
+spring:
+  dubbo: 
+    base-package:             # 提供者service和消费者所在的java包,多个包用逗号分割
+```
+#### 3.注册中心支持的配置参数 （必须配置）
 ```yml
 spring:
   dubbo:
@@ -194,27 +215,8 @@ spring:
       transport: netty      # 可选 性能调优 网络传输方式，可选mina,netty 2.0.0以上版本
       id:                   # 可选 配置关联 注册中心引用BeanId，可以在<dubbo:service registry="">或<dubbo:reference registry="">中引用此ID 1.0.16以上版本
 ```
-#### 2.监控中心配置参数（可选配置）
-```yml
-spring:
-  dubbo:
-    monitor:                # 监控服务
-      address: N/A          # 可选 服务治理 直连监控中心服务器地址，address="10.20.130.230:12080" 1.0.16以上版本
-      protocol: dubbo       # 可选 服务治理 监控中心协议，如果为protocol="registry"，表示从注册中心发现监控中心地址，否则直连监控中心。 2.0.9以上版本
-```
-#### 3.模块定义（可选配置）
-```yml
-spring:
-  dubbo:
-    module:                 # 应用模块定义
-      name:                 # 必填 服务治理 当前模块名称，用于注册中心计算模块间依赖关系 2.2.0以上版本
-      organization:         # 可选 服务治理 组织名称(BU或部门)，用于注册中心区分服务来源，此配置项建议不要使用autoconfig，直接写死在配置中，比如china,intl,itu,crm,asc,dw,aliexpress等 2.2.0以上版本
-      owner:                # 可选 服务治理 模块负责人，用于服务治理，请填写负责人公司邮箱前缀 2.2.0以上版本
-      version:              # 可选 服务治理 当前模块的版本 2.2.0以上版本
-```
 #### 4.服务调用支持的类型（必须配置）
 ```yml
-
 spring:
   dubbo:
     protocol:               # 默认的应用协议栈
@@ -259,27 +261,7 @@ spring:
 #      - name: thrift
 #      - name: webservice
 ```
-#### 5.应用配置参数(必须配置)
-```yml
-spring:
-  dubbo: 
-    application:
-      name: demo-provider     # 必填 服务治理 当前应用名称，用于注册中心计算应用间依赖关系，注意：消费者和提供者应用名不要一样，此参数不是匹配条件，你当前项目叫什么名字就填什么，和提供者消费者角色无关，比如：kylin应用调用了morgan应用的服务，则kylin项目配成kylin，morgan项目配成morgan，可能kylin也提供其它服务给别人使用，但kylin项目永远配成kylin，这样注册中心将显示kylin依赖于morgan 1.0.16以上版本
-      owner: laolei           # 可选 服务治理 应用负责人，用于服务治理，请填写负责人公司邮箱前缀 2.0.5以上版本
-      architecture:           # 可选 服务治理 用于服务分层对应的架构。如，intl、china。不同的架构使用不同的分层。 2.0.7以上版本
-      compiler: javassist     # 可选 性能优化 Java字节码编译器，用于动态类的生成，可选：jdk或javassist 2.1.0以上版本
-      environment:            # 可选 服务治理 应用环境，如：develop/test/product，不同环境使用不同的缺省值，以及作为只用于开发测试功能的限制条件 2.0.0以上版本
-      logger: slf4j           # 可选 性能优化 日志输出方式，可选：slf4j,jcl,log4j,jdk 2.2.0以上版本
-      organization:           # 可选 服务治理 组织名称(BU或部门)，用于注册中心区分服务来源，此配置项建议不要使用autoconfig，直接写死在配置中，比如china,intl,itu,crm,asc,dw,aliexpress等 2.0.0以上版本
-      version:                # 可选 服务治理 当前应用的版本 2.2.0以上版本
-```
-#### 6.服务扫描的包（使用注解时必须配置）
-```yml
-spring:
-  dubbo: 
-    base-package:             # 提供者service和消费者所在的java包,多个包用逗号分割
-```
-#### 7.生产者默认的配置参数（可选配置）
+#### 5.提供者默认的配置参数（可选配置）
 ```yml
 spring:
   dubbo: 
@@ -328,8 +310,51 @@ spring:
       timeout: 1000           # 可选 性能调优 远程服务调用超时时间(毫秒) 2.0.5以上版本
       filter:                 # 可选 性能调优 服务提供方远程调用过程拦截器名称，多个名称用逗号分隔 2.0.5以上版本
 ```
-
-#### 8.服务提供者发布的服务列表（由于这个配置一般用不着，就不写描述了）
+#### 6.调用者默认的配置（可选配置）
+```yml
+spring:
+  dubbo: 
+    consumer:                   # 公用的消费者配置
+      lazy: true                #
+      timeout: 1000             # 可选 性能调优 远程服务调用超时时间(毫秒) 1.0.16以上版本
+      check: true               # 可选 服务治理 启动时检查提供者是否存在，true报错，false忽略 1.0.16以上版本
+      retries: 2                # 可选 性能调优 远程服务调用重试次数，不包括第一次调用，不需要重试请设为0 1.0.16以上版本
+      filter:                   # 可选 性能调优 服务消费方远程调用过程拦截器名称，多个名称用逗号分隔 2.0.5以上版本
+      actives: 0                # 可选 性能调优 每服务消费者每服务每方法最大并发调用数 2.0.5以上版本
+      async: false              # 可选 性能调优 是否缺省异步执行，不可靠异步，只是忽略返回值，不阻塞执行线程 2.0.0以上版本
+      cache:                    # 可选 服务治理 以调用参数为key，缓存返回结果，可选：lru, threadlocal, jcache等 Dubbo2.1.0及其以上版本支持
+      cluster: failover         # 可选 性能调优 集群方式，可选：failover/failfast/failsafe/failback/forking 2.0.5以上版本
+      connections: 100          # 可选 性能调优 每个服务对每个提供者的最大连接数，rmi、http、hessian等短连接协议支持此配置，dubbo协议长连接不支持此配置 1.0.16以上版本
+      generic: false            # 可选 服务治理 是否缺省泛化接口，如果为泛化接口，将返回GenericService 2.0.0以上版本
+      init: false               # 可选 性能调优 是否在afterPropertiesSet()时饥饿初始化引用，否则等到有人注入或引用该实例时再初始化。 2.0.10以上版本
+      layer:                    # 可选 服务治理 服务调用者所在的分层。如：biz、dao、intl:web、china:acton。 2.0.7以上版本
+      listener:                 # 可选 性能调优 服务消费方引用服务监听器名称，多个名称用逗号分隔 2.0.5以上版本
+      loadbalance: random       # 可选 性能调优 负载均衡策略，可选值：random,roundrobin,leastactive，分别表示：随机，轮循，最少活跃调用 1.0.16以上版本
+      owner:                    # 可选 服务治理 调用服务负责人，用于服务治理，请填写负责人公司邮箱前缀 2.0.5以上版本
+      proxy: javassist          # 可选 性能调优 生成动态代理方式，可选：jdk/javassist 2.0.5以上版本
+      registry:                 # 可选 配置关联 向指定注册中心注册，在多个注册中心时使用，值为spring.dubbo.registry.的id属性，多个注册中心ID用逗号分隔，如果不想将该服务注册到任何registry，可将值设为N/A 2.0.5以上版本
+      retries: 2                # 可选 性能调优 远程服务调用重试次数，不包括第一次调用，不需要重试请设为0 1.0.16以上版本
+      validation:               # 可选 服务治理 是否启用JSR303标准注解验证，如果启用，将对方法参数上的注解进行校验 Dubbo2.1.0及其以上版本支持
+```
+#### 7.监控中心配置参数（可选配置）
+```yml
+spring:
+  dubbo:
+    monitor:                # 监控服务
+      address: N/A          # 可选 服务治理 直连监控中心服务器地址，address="10.20.130.230:12080" 1.0.16以上版本
+      protocol: dubbo       # 可选 服务治理 监控中心协议，如果为protocol="registry"，表示从注册中心发现监控中心地址，否则直连监控中心。 2.0.9以上版本
+```
+#### 8.模块定义（可选配置）
+```yml
+spring:
+  dubbo:
+    module:                 # 应用模块定义
+      name:                 # 必填 服务治理 当前模块名称，用于注册中心计算模块间依赖关系 2.2.0以上版本
+      organization:         # 可选 服务治理 组织名称(BU或部门)，用于注册中心区分服务来源，此配置项建议不要使用autoconfig，直接写死在配置中，比如china,intl,itu,crm,asc,dw,aliexpress等 2.2.0以上版本
+      owner:                # 可选 服务治理 模块负责人，用于服务治理，请填写负责人公司邮箱前缀 2.2.0以上版本
+      version:              # 可选 服务治理 当前模块的版本 2.2.0以上版本
+```
+#### 9.服务提供者发布的服务列表（由于这个配置一般用不着，就不写描述了）
 ```yml
 spring:
   dubbo: 
@@ -365,32 +390,6 @@ spring:
         token:
         version: 
         weight:  
-```
-#### 9.调用者默认的配置（可选配置）
-```yml
-spring:
-  dubbo: 
-    consumer:                   # 公用的消费者配置
-      lazy: true                #
-      timeout: 1000             # 可选 性能调优 远程服务调用超时时间(毫秒) 1.0.16以上版本
-      check: true               # 可选 服务治理 启动时检查提供者是否存在，true报错，false忽略 1.0.16以上版本
-      retries: 2                # 可选 性能调优 远程服务调用重试次数，不包括第一次调用，不需要重试请设为0 1.0.16以上版本
-      filter:                   # 可选 性能调优 服务消费方远程调用过程拦截器名称，多个名称用逗号分隔 2.0.5以上版本
-      actives: 0                # 可选 性能调优 每服务消费者每服务每方法最大并发调用数 2.0.5以上版本
-      async: false              # 可选 性能调优 是否缺省异步执行，不可靠异步，只是忽略返回值，不阻塞执行线程 2.0.0以上版本
-      cache:                    # 可选 服务治理 以调用参数为key，缓存返回结果，可选：lru, threadlocal, jcache等 Dubbo2.1.0及其以上版本支持
-      cluster: failover         # 可选 性能调优 集群方式，可选：failover/failfast/failsafe/failback/forking 2.0.5以上版本
-      connections: 100          # 可选 性能调优 每个服务对每个提供者的最大连接数，rmi、http、hessian等短连接协议支持此配置，dubbo协议长连接不支持此配置 1.0.16以上版本
-      generic: false            # 可选 服务治理 是否缺省泛化接口，如果为泛化接口，将返回GenericService 2.0.0以上版本
-      init: false               # 可选 性能调优 是否在afterPropertiesSet()时饥饿初始化引用，否则等到有人注入或引用该实例时再初始化。 2.0.10以上版本
-      layer:                    # 可选 服务治理 服务调用者所在的分层。如：biz、dao、intl:web、china:acton。 2.0.7以上版本
-      listener:                 # 可选 性能调优 服务消费方引用服务监听器名称，多个名称用逗号分隔 2.0.5以上版本
-      loadbalance: random       # 可选 性能调优 负载均衡策略，可选值：random,roundrobin,leastactive，分别表示：随机，轮循，最少活跃调用 1.0.16以上版本
-      owner:                    # 可选 服务治理 调用服务负责人，用于服务治理，请填写负责人公司邮箱前缀 2.0.5以上版本
-      proxy: javassist          # 可选 性能调优 生成动态代理方式，可选：jdk/javassist 2.0.5以上版本
-      registry:                 # 可选 配置关联 向指定注册中心注册，在多个注册中心时使用，值为spring.dubbo.registry.的id属性，多个注册中心ID用逗号分隔，如果不想将该服务注册到任何registry，可将值设为N/A 2.0.5以上版本
-      retries: 2                # 可选 性能调优 远程服务调用重试次数，不包括第一次调用，不需要重试请设为0 1.0.16以上版本
-      validation:               # 可选 服务治理 是否启用JSR303标准注解验证，如果启用，将对方法参数上的注解进行校验 Dubbo2.1.0及其以上版本支持
 ```
 #### 10.调用者配置的列表（由于这个配置一般用不着，就不写描述了）
 ```yml
