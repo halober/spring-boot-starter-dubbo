@@ -9,7 +9,6 @@
 	<packaging>jar</packaging>
 
 	<name>spring-boot-starter-dubbo</name>
-	<description>本项目完全根据spring-boot和dubbo原理实现的整合，支持dubbo所有配置项。新手使用可以得心应手，老手要dubbo的高级用法，他也可以完美支持。这个项目的配置比官方提供的配置方式更友好。</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -194,4 +193,5 @@
 		</dependency>
 	</dependencies>
 
+	<description>本项目是spring-boot与dubbo有机结合的桥梁，根据spring-boot开箱即用的原则实现，使dubbo的使用变得及其简单快捷，容易上手。让dubbo小白正常使用dubbo，只需一盏茶的功夫。</description>
 </project>
