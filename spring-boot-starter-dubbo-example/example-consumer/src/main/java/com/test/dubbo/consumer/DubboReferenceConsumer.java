@@ -22,7 +22,7 @@ public class DubboReferenceConsumer implements CommandLineRunner {
 	User user = new User(11,"测试","hello word !");
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) {
 		System.err.println("注入的是同一个对象："+bidService.equals(service));
 		System.err.printf("%s+%s=%s", a, b ,  bidService.add(a, b));
 		System.err.println();
