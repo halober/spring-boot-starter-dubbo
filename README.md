@@ -243,19 +243,19 @@ spring:
       threads: 100          # 可选 性能调优 服务线程池大小(固定大小) 2.0.5以上版本
       transporter: netty    # 可选 性能调优 协议的服务端和客户端实现类型，比如：dubbo协议的mina,netty等，可以分拆为server和client配置 2.0.5以上版本
       
-  #  如果需要配置多个协议可以使用如下方式
-  #    protocols:
-  #      - name: dubbo
-  #        serialization: nativejava
-  #      - name: dubbo
-  #        serialization: hessian2
-  #      - name: dubbo
-  #        serialization: fastjson
-  #      - name: dubbo
-  #        serialization: dubbo
-  #      - name: rmi
-  #      - name: http
-  #      - name: hessian
-  #      - name: thrift
-  #      - name: webservice
+#  如果需要配置多个协议可以使用如下方式
+#    protocols:
+#      - name: dubbo
+#        serialization: nativejava
+#      - name: dubbo
+#        serialization: hessian2
+#      - name: dubbo
+#        serialization: fastjson
+#      - name: dubbo
+#        serialization: dubbo
+#      - name: rmi
+#      - name: http
+#      - name: hessian
+#      - name: thrift
+#      - name: webservice
 ```
