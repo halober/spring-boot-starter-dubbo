@@ -194,3 +194,9 @@ spring:
       transport: netty      # 可选 性能调优 网络传输方式，可选mina,netty 2.0.0以上版本
       id:                   # 可选 配置关联 注册中心引用BeanId，可以在<dubbo:service registry="">或<dubbo:reference registry="">中引用此ID 1.0.16以上版本
 ```
+#### 2.监控中心配置参数（非必需配置）
+spring:
+  dubbo:
+    monitor:                # 监控服务
+      address: N/A          # 可选 服务治理 直连监控中心服务器地址，address="10.20.130.230:12080" 1.0.16以上版本
+      protocol: dubbo       # 可选 服务治理 监控中心协议，如果为protocol="registry"，表示从注册中心发现监控中心地址，否则直连监控中心。 2.0.9以上版本
