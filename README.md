@@ -328,3 +328,41 @@ spring:
       timeout: 1000           # 可选 性能调优 远程服务调用超时时间(毫秒) 2.0.5以上版本
       filter:                 # 可选 性能调优 服务提供方远程调用过程拦截器名称，多个名称用逗号分隔 2.0.5以上版本
 ```
+
+#### 8.服务提供者发布的服务列表（由于这个配置一般用不着，就不写描述了）
+```yml
+spring:
+  dubbo: 
+    services:
+      - provider: 
+        accesslog:
+        async:
+        cluster: 
+        connections: 
+        contextpath: 
+        delay: 
+        deprecated:
+        document: 
+        dynamic:
+        executes: 
+        filter: 
+        group: 
+        interface: 
+        layer: 
+        listener: 
+        loadbalance: 
+        mock:
+        owner: 
+        path: 
+        protocol: 
+        proxy: 
+        ref:
+        register:
+        registry: 
+        retries: 
+        stub:
+        timeout: 
+        token:
+        version: 
+        weight:  
+```
