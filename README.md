@@ -171,4 +171,26 @@ public class SpringDubboConfigApplication implements CommandLineRunner {
     }
 }
 ```
- 
+## 可用配置项  
+#### 1.注册中心支持的配置参数 （必须配置）
+```yml
+spring:
+  dubbo:
+    registry:               # 应用注册中心配置项
+      protocol: zookeeper   # 必填 服务发现 注册中心支持的协议 包括 dubbo,multicast,zookeeper,redis 默认是zookeeper
+      address: 127.0.0.1    # 必填 服务发现 注册中心服务器地址，如果地址没有端口缺省为9090，同一集群内的多个地址用逗号分隔，如：ip:port,ip:port，不同集群的注册中心，请配置多个spring.dubbo.registry.标签 1.0.16以上版本
+      port: 2181            # 可选 服务发现 注册中心缺省端口，当address没有带端口时使用此端口做为缺省值 2.0.0以上版本
+      client: zkclient      # 可选 服务发现 注册中心支持的客户端， zookeeper 支持客户端包括 curator和zkclient,如果不配置，默认使用zkclient 
+      session: 60000        # 可选 性能调优 注册中心会话超时时间(毫秒)，用于检测提供者非正常断线后的脏数据，比如用心跳检测的实现，此时间就是心跳间隔，不同注册中心实现不一样。 2.1.0以上版本
+      register: true        # 可选 服务治理 是否向此注册中心注册服务，如果设为false，将只订阅，不注册 2.0.5以上版本
+      check: false          # 可选 服务治理 服务是否动态注册，如果设为false，注册后将显示后disable状态，需人工启用，并且服务提供者停止时，也不会自动取消册，需人工禁用。 2.0.5以上版本
+      dynamic: true         # 可选 服务治理 服务是否动态注册，如果设为false，注册后将显示后disable状态，需人工启用，并且服务提供者停止时，也不会自动取消册，需人工禁用。 2.0.5以上版本
+      file: regcache.log    # 可选 服务治理 使用文件缓存注册中心地址列表及服务提供者列表，应用重启时将基于此文件恢复，注意：两个注册中心不能使用同一文件存储 2.0.0以上版本
+      username:             # 可选 服务治理 登录注册中心用户名，如果注册中心不需要验证可不填 2.0.0以上版本
+      password:             # 可选 服务治理 登录注册中心密码，如果注册中心不需要验证可不填 2.0.0以上版本
+      subscribe:            # 可选 服务治理 是否向此注册中心订阅服务，如果设为false，将只注册，不订阅 2.0.5以上版本
+      timeout:              # 可选 性能调优 注册中心请求超时时间(毫秒) 2.0.0以上版本
+      wait: 0               # 可选 性能调优 停止时等待通知完成时间(毫秒) 2.0.0以上版本
+      transport: netty      # 可选 性能调优 网络传输方式，可选mina,netty 2.0.0以上版本
+      id:                   # 可选 配置关联 注册中心引用BeanId，可以在<dubbo:service registry="">或<dubbo:reference registry="">中引用此ID 1.0.16以上版本
+```
