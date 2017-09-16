@@ -14,11 +14,11 @@ spring-boot-start-dubbo，是spring-boot与dubbo有机结合的桥梁，根据`s
 
 2.下载示例的服务提供者[example-provider](http://central.maven.org/maven2/com/gitee/reger/example-provider/1.0.1/example-provider-1.0.1.jar)，执行命令
 ```sh
-java -jar example-provider-1.0.1.jar --spring.dubbo.address=127.0.0.1  --spring.dubbo.port=2181 
+java -jar example-provider-1.0.1.jar --spring.dubbo.registry.address=127.0.0.1  --spring.dubbo.registry.port=2181 
 ```
 3.下载示例的服务调用者[example-consumer](http://central.maven.org/maven2/com/gitee/reger/example-consumer/1.0.1/example-consumer-1.0.1.jar)，执行命令
 ```sh
-java -jar example-consumer-1.0.1.jar --spring.dubbo.address=127.0.0.1  --spring.dubbo.port=2181 
+java -jar example-consumer-1.0.1.jar --spring.dubbo.registry.address=127.0.0.1  --spring.dubbo.registry.port=2181 
 ```
 4.consumer和provider都有正常调用的日志输出，至此简单示例就运行起来了，也表示你本地的dubbo环境已经可以用了。
 
