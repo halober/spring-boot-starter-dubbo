@@ -25,6 +25,7 @@ import com.alibaba.dubbo.config.ProviderConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.config.ServiceConfig;
+import com.reger.dubbo.properties.DubboProperties;
 
 @Configuration
 public class DubboAutoConfiguration extends AnnotationBean implements EnvironmentAware {
