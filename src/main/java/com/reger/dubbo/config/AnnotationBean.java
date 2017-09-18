@@ -118,11 +118,18 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 	 */
 	private Object refer(Inject inject, Class<?> referenceClass) {
 		try {
-			Object obj = applicationContext.getBean(referenceClass);
-			if (obj != null)
-				return obj;
+			String beanName = inject.name().trim();
+			if(beanName.isEmpty()){
+				Object obj = applicationContext.getBean(referenceClass);
+				if (obj != null)
+					return obj;
+			}else{
+				Object obj = applicationContext.getBean(beanName, referenceClass);
+				if (obj != null)
+					return obj;
+			}
 		} catch (BeansException e) {
-			logger.debug("从spring上下文无法正确注入{}，将从dubbo中加载  , Error Message:{}", referenceClass, e.getMessage());
+			logger.debug("从spring上下文无法正确注入{}，将从dubbo中加载  , Error Message:{}", referenceClass, e.getMessage(),e);
 		}
 		return refer(inject.value(), referenceClass);
 	}

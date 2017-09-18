@@ -17,9 +17,17 @@ import com.alibaba.dubbo.config.annotation.Reference;
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD })
 public @interface Inject {
+	
+	/**
+	 * 该参数只对从spring容器注入bean生效
+	 * @return
+	 */
+	String name() default "";
+	
 	/**
 	 * 如果从spring容器没有能够找到的话，使用该配置到dubbo中找
 	 * @return dubbo的注入参数
 	 */
 	Reference value() default @Reference();
+	
 }
