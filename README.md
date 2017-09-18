@@ -5,6 +5,7 @@ spring-boot-start-dubbo，是spring-boot与dubbo有机结合的桥梁，根据`s
 使用本项目，你肯定会发现，原来`dubbo发布服务如此简单`。
 
 ### 本项目特点
+
 ###### 1.支持dubbo原生所有的配置项，使用spring-boot方式配置
 ###### 2.配置项描述清晰，让你在配置参数时，`等同在看dubbo官方中文文档`（需要安装spring-ide插件）(<a href="https://dubbo.gitbooks.io/dubbo-user-book" target="dubbo-user-doc-cn">dubbo中文文档点这里</a>)， (<a href="https://github.com/alibaba/dubbo/releases" target="dubbo-releases">dubbo更新记录</a>)
 ###### 3.提供注解@Inject，用来替换@Reference的依赖注入，让spring+dubbo时依赖注入注解更简单（该注解如果不能从spring上下文注入对象，将使用等同@Reference的依赖注入方式注入对象）
@@ -119,8 +120,8 @@ import com.test.dubbo.service.DemoService;
 @Component
 public class DemoConsumer implements CommandLineRunner {
 
-    // 使用dubbo原生注入，可以选择使用@Inject兼容注入
-    @Reference DemoService service; 
+    // 使用dubbo原生注入，可以选择使用@Reference兼容注入
+    @Inject DemoService service; 
 
     @Override
     public void run(String... args){  
