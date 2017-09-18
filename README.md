@@ -11,37 +11,26 @@ spring-boot-start-dubbo，是spring-boot与dubbo有机结合的桥梁，根据`s
 ###### 3.提供注解@Inject，用来替换@Reference的依赖注入，让spring+dubbo时依赖注入注解更简单（该注解如果不能从spring上下文注入对象，将使用等同@Reference的依赖注入方式注入对象）
 
 ### 更新记录
+```
 ##### 1.0.2
- 发布时间：2017年9月16日
-
+发布时间：2017年9月16日
 更新内容： 
-
   1.升级spring-boot版本到1.5.7
-
   2.升级dubbo到2.5.5
-
-##### 1.0.1
+1.0.1
 发布时间：2017年9月9日
-
 更新内容： 
-
   1.升级spring-boot版本到1.5.6
-
   2.升级dubbo到2.5.4
-
   3.解决部分bug
-
   4.优化部分代码
-
   5.编写README.md描述文档
-
   6.重新整理项目结构
-
-##### 1.0.0
+1.0.0
 发布时间： 未对外发布，应该是2017年8月分完成
-
-更新内容： 1.完成了所有配置功能
-
+更新内容： 
+   1.完成了所有配置功能
+```
 ### 简单示例
 1.示例项目推荐使用zookeeper作为注册中心，因为线上你肯定会用它。如果你本地没有可用的zookeeper服务，你可以[点击这里下载](http://mirror.bit.edu.cn/apache/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz),下载后解压，进入zookeeper的conf目录，拷贝zoo_sample.cfg它为zoo.cfg，进入zookeeper的bin目录,windows系统下双击zkServer.cmd，linux下执行`zkServer.sh start`命令。
 
