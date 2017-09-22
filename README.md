@@ -12,6 +12,11 @@ spring-boot-start-dubbo，是spring-boot与dubbo有机结合的桥梁，根据`s
 
 ### 更新记录
 ```
+1.0.3
+发布时间： 预计2017年9月23日
+更新内容：
+  1. @Inject注解增加name参数。该参数只针对从spring上下文注入bean有效，当spring上下文有这个类的多个实例时，可以用name指定注入注入那一个。
+
 1.0.2
 发布时间：2017年9月16日
 更新内容： 
@@ -195,6 +200,9 @@ public class SpringDubboConfigApplication implements CommandLineRunner {
     }
 }
 ```
+### 项目推荐
+使用了后端通过jar包发布的rpc协议库，然后与前端app h5 微信交互使用restful api,你或许很有必要使用这个restful文档插件[spring-boot-starter-swagger](https://gitee.com/reger/spring-boot-starter-swagger)
+
 ## 可用配置项  
 
 #### 1.应用配置参数(必须配置)
