@@ -20,7 +20,7 @@ public @interface Inject {
 	
 	/**
 	 * 该参数只对从spring容器注入bean生效
-	 * @return
+	 * @return 需要注入的beanName
 	 */
 	String name() default "";
 	
