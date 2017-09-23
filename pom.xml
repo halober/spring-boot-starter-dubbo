@@ -5,7 +5,7 @@
 
 	<groupId>com.gitee.reger</groupId>
 	<artifactId>spring-boot-starter-dubbo</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<packaging>jar</packaging>
 
 	<name>spring-boot-starter-dubbo</name>
@@ -188,5 +188,10 @@
 		</dependency>
 	</dependencies>
 
-	<description>本项目是spring-boot与dubbo有机结合的桥梁，根据spring-boot开箱即用的原则实现，使dubbo的使用变得及其简单快捷，容易上手。让dubbo小白正常使用dubbo，只需一盏茶的功夫。</description>
+	<description>本项目是spring-boot与dubbo有机结合的桥梁，根据spring-boot开箱即用的原则实现，使dubbo的使用变得及其简单快捷，容易上手。让dubbo小白正常使用dubbo，只需一盏茶的功夫。让分布式大牛使用dubbo，也如沐春风。</description>
+	<url>https://gitee.com/reger/spring-boot-starter-dubbo</url>
+	<organization>
+		<url>https://gitee.com/reger/</url>
+		<name>reger</name>
+	</organization>
 </project>
