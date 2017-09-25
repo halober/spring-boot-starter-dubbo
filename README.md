@@ -15,7 +15,7 @@ spring-boot-start-dubbo，是spring-boot与dubbo有机结合的桥梁，根据`s
 1.0.3
 发布时间： 2017年9月23日
 更新内容：
-  1. @Inject注解增加name参数。该参数只针对从spring上下文注入bean有效，当spring上下文有这个类的多个实例时，可以用name指定注入注入那一个。
+  1.@Inject注解增加name参数。该参数只针对从spring上下文注入bean有效，当spring上下文有这个类的多个实例时，可以用name指定注入那一个。
   2.修改校验库依赖的方式
 
 1.0.2
