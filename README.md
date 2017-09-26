@@ -203,6 +203,9 @@ public class SpringDubboConfigApplication implements CommandLineRunner {
 ```
 ### 项目推荐
 使用了后端通过jar包发布的rpc协议库，然后与前端app h5 微信交互使用restful api,你或许很有必要使用这个restful文档插件[spring-boot-starter-swagger](https://gitee.com/reger/spring-boot-starter-swagger)
+###
+
+[博客地址](http://blog.csdn.net/hulei19900322/article/details/78106718)
 
 ## 可用配置项  
 
