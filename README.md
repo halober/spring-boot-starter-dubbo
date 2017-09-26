@@ -10,6 +10,9 @@ spring-boot-start-dubbo，是spring-boot与dubbo有机结合的桥梁，根据`s
 ###### 2.配置项描述清晰，让你在配置参数时，`等同在看dubbo官方中文文档`（需要安装spring-ide插件）(<a href="https://dubbo.gitbooks.io/dubbo-user-book" target="dubbo-user-doc-cn">dubbo中文文档点这里</a>)， (<a href="https://github.com/alibaba/dubbo/releases" target="dubbo-releases">dubbo更新记录</a>)
 ###### 3.提供注解@Inject，用来替换@Reference的依赖注入，让spring+dubbo时依赖注入注解更简单（该注解如果不能从spring上下文注入对象，将使用等同@Reference的依赖注入方式注入对象）
 
+### 快速入门
+快速入门[点击这里](http://blog.csdn.net/hulei19900322/article/details/78106718)
+
 ### 更新记录
 ```
 1.0.3
@@ -56,9 +59,6 @@ java -jar example-consumer-1.0.1.jar --spring.dubbo.registry.address=127.0.0.1  
 ```sh
 git clone https://gitee.com/lei0719/spring-boot-starter-dubbo-example.git
 ```  
-## 快速入门
-[快速入门点击这里](http://blog.csdn.net/hulei19900322/article/details/78106718)
-
 ### 项目推荐
 使用了后端通过jar包发布的rpc协议库，然后与前端app h5 微信交互使用restful api,你或许很有必要使用这个restful文档插件[spring-boot-starter-swagger](https://gitee.com/reger/spring-boot-starter-swagger)
 ###
