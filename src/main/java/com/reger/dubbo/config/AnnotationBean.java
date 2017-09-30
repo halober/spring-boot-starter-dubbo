@@ -220,10 +220,9 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 
 	/**
 	 * 如果可以直接从spring容器加载，就不从dubbo容器加载
-	 * 
-	 * @param inject
-	 * @param referenceClass
-	 * @return
+	 * @param inject 注入的注解参数
+	 * @param referenceClass 需要注入的类类型
+	 * @return 注入的类实例
 	 */
 	protected Object refer(Inject inject, Class<?> referenceClass) {
 		try {
@@ -303,8 +302,8 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 	
 	/**
 	 * 匹配类实例是否在包中
-	 * @param bean
-	 * @return
+	 * @param bean 被判断的类
+	 * @return 是否包含
 	 */
 	protected boolean isMatchPackage(Object bean) {
 		if (annotationPackages == null || annotationPackages.length == 0) {
