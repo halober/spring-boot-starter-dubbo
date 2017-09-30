@@ -5,21 +5,29 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.Assert;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.ConsumerConfig;
 import com.alibaba.dubbo.config.ModuleConfig;
 import com.alibaba.dubbo.config.MonitorConfig;
+import com.alibaba.dubbo.config.ProtocolConfig;
+import com.alibaba.dubbo.config.ProviderConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
+import com.alibaba.dubbo.config.ServiceConfig;
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.dubbo.config.spring.ReferenceBean;
+import com.alibaba.dubbo.config.spring.ServiceBean;
 import com.reger.dubbo.annotation.Inject;
 
 public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBean {
@@ -28,8 +36,10 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 
 	private static final Logger logger = LoggerFactory.getLogger(AnnotationBean.class);
 
-	private ConcurrentMap<String, ReferenceBean<?>> referenceSelfConfigs = null;
+	private final Map<String, ReferenceBean<?>> referenceSelfConfigs;
 
+    private final Set<ServiceConfig<?>> serviceConfigs;
+    
 	private ApplicationContext applicationContext;
 
 	private String[] annotationPackages;
@@ -37,12 +47,18 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 	@SuppressWarnings("unchecked")
 	public AnnotationBean() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		super();
-		Field field = com.alibaba.dubbo.config.spring.AnnotationBean.class.getDeclaredField("referenceConfigs");
-		if (!field.isAccessible()) {
-			field.setAccessible(true);
+		Field referenceField = com.alibaba.dubbo.config.spring.AnnotationBean.class.getDeclaredField("referenceConfigs");
+		if (!referenceField.isAccessible()) {
+			referenceField.setAccessible(true);
 		}
-		referenceSelfConfigs = (ConcurrentMap<String, ReferenceBean<?>>) field.get(this);
-		field.setAccessible(false);
+		referenceSelfConfigs = (Map<String, ReferenceBean<?>>) referenceField.get(this);
+		referenceField.setAccessible(false);
+		Field serviceField = com.alibaba.dubbo.config.spring.AnnotationBean.class.getDeclaredField("serviceConfigs");
+		if (!serviceField.isAccessible()) {
+			serviceField.setAccessible(true);
+		}
+		serviceConfigs = (Set<ServiceConfig<?>>) serviceField.get(this);
+		serviceField.setAccessible(false);
 
 	}
 
@@ -57,7 +73,84 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 		this.applicationContext = applicationContext;
 		super.setApplicationContext(applicationContext);
 	}
+	@Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        if (!isMatchPackage(bean)) {
+            return bean;
+        }
+        Class<?> clazs=this.getOriginalClass(bean);
+        Service service = clazs.getAnnotation(Service.class);
+        if (service != null) {
+            if (void.class.equals(service.interfaceClass()) && "".equals(service.interfaceName())) {
+            	Class<?>[] interfaces = clazs.getInterfaces();
+            	Assert.notEmpty(interfaces, "Failed to export remote service class " + clazs.getName() + ", cause: The @Service undefined interfaceClass or interfaceName, and the service class unimplemented any interfaces.");
+               for (Class<?> interfaceClass : interfaces) {
+            	   this.export(bean, service, interfaceClass);
+            	   logger.debug("成功导出{}" , interfaceClass);
+               }
+            }else{
+            	this.export(bean, service,null);
+            }
+        }
+        return bean;
+    }
 
+	private void export(Object bean, Service service, Class<?> interfaceClass) {
+		ServiceBean<Object> serviceConfig = new ServiceBean<Object>(service);
+		if (interfaceClass != null) {
+			serviceConfig.setInterface(interfaceClass);
+		}
+		if (applicationContext != null) {
+			serviceConfig.setApplicationContext(applicationContext);
+			if (service.registry() != null && service.registry().length > 0) {
+				List<RegistryConfig> registryConfigs = new ArrayList<RegistryConfig>();
+				for (String registryId : service.registry()) {
+					if (registryId != null && registryId.length() > 0) {
+						registryConfigs.add((RegistryConfig) applicationContext.getBean(registryId, RegistryConfig.class));
+					}
+				}
+				serviceConfig.setRegistries(registryConfigs);
+			}
+			if (service.provider() != null && service.provider().length() > 0) {
+				serviceConfig.setProvider((ProviderConfig) applicationContext.getBean(service.provider(), ProviderConfig.class));
+			}
+			if (service.monitor() != null && service.monitor().length() > 0) {
+				serviceConfig
+						.setMonitor((MonitorConfig) applicationContext.getBean(service.monitor(), MonitorConfig.class));
+			}
+			if (service.application() != null && service.application().length() > 0) {
+				serviceConfig.setApplication( (ApplicationConfig) applicationContext.getBean(service.application(), ApplicationConfig.class));
+			}
+			if (service.module() != null && service.module().length() > 0) {
+				serviceConfig.setModule((ModuleConfig) applicationContext.getBean(service.module(), ModuleConfig.class));
+			}
+			if (service.provider() != null && service.provider().length() > 0) {
+				serviceConfig.setProvider((ProviderConfig) applicationContext.getBean(service.provider(), ProviderConfig.class));
+			} else {
+
+			}
+			if (service.protocol() != null && service.protocol().length > 0) {
+				List<ProtocolConfig> protocolConfigs = new ArrayList<ProtocolConfig>();
+				for (String protocolId : service.registry()) {
+					if (protocolId != null && protocolId.length() > 0) {
+						protocolConfigs.add((ProtocolConfig) applicationContext.getBean(protocolId, ProtocolConfig.class));
+					}
+				}
+				serviceConfig.setProtocols(protocolConfigs);
+			}
+			try {
+				serviceConfig.afterPropertiesSet();
+			} catch (RuntimeException e) {
+				throw (RuntimeException) e;
+			} catch (Exception e) {
+				throw new IllegalStateException(e.getMessage(), e);
+			}
+		}
+		serviceConfig.setRef(bean);
+		serviceConfigs.add(serviceConfig);
+		serviceConfig.export();
+	}
+	
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (!isMatchPackage(bean)) {
@@ -65,45 +158,61 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 		}
 		this.buildMethod(bean);
 		this.buildField(bean);
-		return super.postProcessBeforeInitialization(bean, beanName);
+		return bean;
 	}
 
 	private void buildField(Object bean) {
-		Field[] fields = bean.getClass().getDeclaredFields();
+		Field[] fields = this.getOriginalClass(bean).getDeclaredFields();
 		for (Field field : fields) {
 			try {
 				if (!field.isAccessible()) {
 					field.setAccessible(true);
 				}
 				Inject inject = field.getAnnotation(Inject.class);
+				Class<?> type=field.getType();
+				Object value =null;
 				if (inject != null) {
-					Object value = this.refer(inject, field.getType());
-					if (value != null) {
-						field.set(bean, value);
+					value= this.refer(inject, type);
+				}else{
+					Reference reference = field.getAnnotation(Reference.class);
+					if (reference != null) {
+						value= this.refer(reference, type);
 					}
 				}
+				if (value != null) {
+					field.set(bean, value);
+				}
 			} catch (Throwable e) {
-				logger.error("Failed to init remote service reference at filed {} in class {}, cause: {}", field.getName(), bean.getClass().getName(), e.getMessage(), e);
+				logger.error("Failed to init remote service reference at filed {} in class {}, cause: {}", field.getName(), this.getOriginalClass(bean).getName(), e.getMessage(), e);
 			}
 		}
 	}
 
 	private void buildMethod(Object bean) {
-		Method[] methods = bean.getClass().getMethods();
+		Method[] methods = this.getOriginalClass(bean).getMethods();
 		for (Method method : methods) {
 			String name = method.getName();
 			if (name.length() > 3 && name.startsWith("set") && method.getParameterTypes().length == 1
 					&& Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers())) {
 				try {
 					Inject inject = method.getAnnotation(Inject.class);
+					Class<?> type = method.getParameterTypes()[0];
+					Object value = null;
 					if (inject != null) {
-						Object value = refer(inject, method.getParameterTypes()[0]);
+						value = this.refer(inject, type);
+					} else {
+						Reference reference = method.getAnnotation(Reference.class);
+						if (reference != null) {
+							value = this.refer(reference, type);
+						}
+					}
+					if (value != null) {
 						if (value != null) {
 							method.invoke(bean, new Object[] { value });
 						}
 					}
 				} catch (Throwable e) {
-					logger.error("Failed to init remote service reference at method {} in class {}, cause: {}", name, bean.getClass().getName(), e.getMessage(), e);
+					logger.error("Failed to init remote service reference at method {} in class {}, cause: {}", name, this.getOriginalClass(bean).getName(), e.getMessage(), e);
 				}
 			}
 		}
@@ -116,7 +225,7 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 	 * @param referenceClass
 	 * @return
 	 */
-	private Object refer(Inject inject, Class<?> referenceClass) {
+	protected Object refer(Inject inject, Class<?> referenceClass) {
 		try {
 			String beanName = inject.name().trim();
 			if(beanName.isEmpty()){
@@ -191,18 +300,34 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 		}
 		return referenceConfig.get();
 	}
-
-	private boolean isMatchPackage(Object bean) {
+	
+	/**
+	 * 匹配类实例是否在包中
+	 * @param bean
+	 * @return
+	 */
+	protected boolean isMatchPackage(Object bean) {
 		if (annotationPackages == null || annotationPackages.length == 0) {
 			return true;
 		}
-		String beanClassName = bean.getClass().getName();
+		String beanClassName =this.getOriginalClass(bean).getName();
 		for (String pkg : annotationPackages) {
 			if (beanClassName.startsWith(pkg)) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * 获取bean的原始类型
+	 * @param bean  输入的bean对象
+	 * @return bean的原始类型
+	 */
+	private Class<?> getOriginalClass(Object bean){
+		if(AopUtils.isAopProxy(bean))
+			return AopUtils.getTargetClass(bean);
+		return bean.getClass();
 	}
 
 }
