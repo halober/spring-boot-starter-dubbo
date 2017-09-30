@@ -86,7 +86,7 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
             	Assert.notEmpty(interfaces, "Failed to export remote service class " + clazs.getName() + ", cause: The @Service undefined interfaceClass or interfaceName, and the service class unimplemented any interfaces.");
                for (Class<?> interfaceClass : interfaces) {
             	   this.export(bean, service, interfaceClass);
-            	   logger.debug("成功导出{}" , interfaceClass);
+            	   logger.debug("dubbo成功将{}以{}方式导出" ,beanName, interfaceClass);
                }
             }else{
             	this.export(bean, service,null);
