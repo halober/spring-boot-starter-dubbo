@@ -242,7 +242,7 @@ spring:
   dubbo:
     monitor:                # 监控服务
       address: N/A          # 可选 服务治理 直连监控中心服务器地址，address="10.20.130.230:12080" 1.0.16以上版本
-      protocol: dubbo       # 可选 服务治理 监控中心协议，如果为protocol="registry"，表示从注册中心发现监控中心地址，否则直连监控中心。 2.0.9以上版本
+      protocol: registry    # 可选 服务治理 监控中心协议，如果为protocol="registry"，表示从注册中心发现监控中心地址，否则直连监控中心。 2.0.9以上版本
 ```
 #### 8.模块定义（可选配置）
 ```yml
