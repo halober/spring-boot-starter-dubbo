@@ -1,7 +1,6 @@
 package com.reger.dubbo.config;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +13,7 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.config.ApplicationConfig;
@@ -162,8 +162,7 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 	}
 
 	private void buildField(Object bean) {
-		Field[] fields = this.getOriginalClass(bean).getDeclaredFields();
-		for (Field field : fields) {
+		ReflectionUtils.doWithFields(this.getOriginalClass(bean), field->{
 			try {
 				if (!field.isAccessible()) {
 					field.setAccessible(true);
@@ -185,15 +184,12 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 			} catch (Throwable e) {
 				logger.error("Failed to init remote service reference at filed {} in class {}, cause: {}", field.getName(), this.getOriginalClass(bean).getName(), e.getMessage(), e);
 			}
-		}
+		});
 	}
 
 	private void buildMethod(Object bean) {
-		Method[] methods = this.getOriginalClass(bean).getMethods();
-		for (Method method : methods) {
-			String name = method.getName();
-			if (name.length() > 3 && name.startsWith("set") && method.getParameterTypes().length == 1
-					&& Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers())) {
+		ReflectionUtils.doWithMethods(this.getOriginalClass(bean), method->{
+			if (method.getParameterTypes().length == 1 && Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers())) {
 				try {
 					Inject inject = method.getAnnotation(Inject.class);
 					Class<?> type = method.getParameterTypes()[0];
@@ -212,10 +208,11 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 						}
 					}
 				} catch (Throwable e) {
-					logger.error("Failed to init remote service reference at method {} in class {}, cause: {}", name, this.getOriginalClass(bean).getName(), e.getMessage(), e);
+					logger.error("Failed to init remote service reference at method {} in class {}, cause: {}", method.getName(), this.getOriginalClass(bean).getName(), e.getMessage(), e);
 				}
 			}
-		}
+		
+		});
 	}
 
 	/**
