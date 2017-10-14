@@ -325,5 +325,12 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 			return AopUtils.getTargetClass(bean);
 		return bean.getClass();
 	}
-
+	
+	@Override
+	public void destroy() throws Exception {
+		logger.warn("dubbo开始关闭....");
+		super.destroy();
+		ProtocolConfig.destroyAll();
+		RegistryConfig.destroyAll();
+	}
 }
