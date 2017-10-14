@@ -328,7 +328,7 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 	
 	@Override
 	public void destroy() throws Exception {
-		logger.warn("dubbo开始关闭....");
+		logger.info("dubbo开始关闭....");
 		super.destroy();
 		ProtocolConfig.destroyAll();
 		RegistryConfig.destroyAll();
