@@ -111,6 +111,7 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		for (ReferenceConfig<?> referenceConfig : references) {
 			String beanName = referenceConfig.getId() + "-ReferenceConfig";
 			beanFactory.registerSingleton(beanName, referenceConfig);
+			beanFactory.registerSingleton(referenceConfig.getId(), referenceConfig.get());
 			logger.debug("注册调用信息{} 完毕", beanName);
 		}
 	}
@@ -122,6 +123,7 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		for (ServiceConfig<?> serviceConfig : services) {
 			String beanName = serviceConfig.getId() + "-ServiceConfig";
 			beanFactory.registerSingleton(beanName, serviceConfig);
+			serviceConfig.export();
 			logger.debug("注册服务信息{} 完毕", beanName);
 		}
 	}
@@ -167,7 +169,7 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		if(protocol.getPort()==null||protocol.getPort()==0)
 			protocol.setPort(SocketUtils.findAvailableTcpPort(53600, 53688));
 		beanFactory.registerSingleton(beanName, protocol);
-		logger.debug("注册协议信息{} 完毕", beanName + "-ProtocolConfig");
+		logger.debug("注册协议信息{}-ProtocolConfig 完毕", beanName );
 	}
 	
 	private void registerProtocols(List<ProtocolConfig> protocols, ConfigurableListableBeanFactory beanFactory) {
