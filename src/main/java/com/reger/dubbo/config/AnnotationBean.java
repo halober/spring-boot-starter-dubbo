@@ -1,6 +1,7 @@
 package com.reger.dubbo.config;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.ReflectionUtils.FieldCallback;
+import org.springframework.util.ReflectionUtils.MethodCallback;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.config.ApplicationConfig;
@@ -176,50 +179,59 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 		return bean;
 	}
 
-	private void buildField(Object bean) {
-		ReflectionUtils.doWithFields(this.getOriginalClass(bean), field -> {
-			try {
-				if (!field.isAccessible()) {
-					field.setAccessible(true);
-				}
-				Inject inject = field.getAnnotation(Inject.class);
-				Class<?> type = field.getType();
-				if (inject != null) {
-					field.set(bean, this.refer(inject, type));
-				} else {
-					Reference reference = field.getAnnotation(Reference.class);
-					if (reference != null) {
-						field.set(bean, this.refer(reference, type));
-					}
-				}
-			} catch (Throwable e) {
-				logger.error("Failed to init remote service reference at filed {} in class {}, cause: {}", field.getName(), this.getOriginalClass(bean).getName(), e.getMessage(), e);
-				throw new BeanInitializationException("Failed to init remote service reference at filed " + field.getName() + " in class " + bean.getClass().getName(), e);
-			}
-		});
-	}
-
-	private void buildMethod(Object bean) {
-		ReflectionUtils.doWithMethods(this.getOriginalClass(bean), method -> {
-			if (method.getParameterTypes().length == 1 && Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers())) {
+	private void buildField(final Object bean) {
+		ReflectionUtils.doWithFields(this.getOriginalClass(bean),new FieldCallback() {
+			@Override
+			public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
 				try {
-					Inject inject = method.getAnnotation(Inject.class);
-					Class<?> type = method.getParameterTypes()[0];
+					if (!field.isAccessible()) {
+						field.setAccessible(true);
+					}
+					Inject inject = field.getAnnotation(Inject.class);
+					Class<?> type = field.getType();
 					if (inject != null) {
-						method.invoke(bean, new Object[] { this.refer(inject, type) });
+						field.set(bean, AnnotationBean.this.refer(inject, type));
 					} else {
-						Reference reference = method.getAnnotation(Reference.class);
+						Reference reference = field.getAnnotation(Reference.class);
 						if (reference != null) {
-							method.invoke(bean, new Object[] { this.refer(reference, type) });
+							field.set(bean, AnnotationBean.this.refer(reference, type));
 						}
 					}
 				} catch (Throwable e) {
-					logger.error("Failed to init remote service reference at method {} in class {}, cause: {}", method.getName(), this.getOriginalClass(bean).getName(), e.getMessage(), e);
-					throw new BeanInitializationException("Failed to init remote service reference at method " + method.getName() + " in class " + bean.getClass().getName(), e);
+					logger.error("Failed to init remote service reference at filed {} in class {}, cause: {}", field.getName(), AnnotationBean.this.getOriginalClass(bean).getName(), e.getMessage(), e);
+					throw new BeanInitializationException("Failed to init remote service reference at filed " + field.getName() + " in class " + bean.getClass().getName(), e);
 				}
+			
 			}
+		});  
+	}
 
-		});
+	private void buildMethod(final Object bean) {
+		ReflectionUtils.doWithMethods(this.getOriginalClass(bean), new MethodCallback() {
+			
+			@Override
+			public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
+
+				if (method.getParameterTypes().length == 1 && Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers())) {
+					try {
+						Inject inject = method.getAnnotation(Inject.class);
+						Class<?> type = method.getParameterTypes()[0];
+						if (inject != null) {
+							method.invoke(bean, new Object[] { AnnotationBean.this.refer(inject, type) });
+						} else {
+							Reference reference = method.getAnnotation(Reference.class);
+							if (reference != null) {
+								method.invoke(bean, new Object[] { AnnotationBean.this.refer(reference, type) });
+							}
+						}
+					} catch (Throwable e) {
+						logger.error("Failed to init remote service reference at method {} in class {}, cause: {}", method.getName(), AnnotationBean.this.getOriginalClass(bean).getName(), e.getMessage(), e);
+						throw new BeanInitializationException("Failed to init remote service reference at method " + method.getName() + " in class " + bean.getClass().getName(), e);
+					}
+				}
+
+			}
+		}); 
 	}
 
 	/**
