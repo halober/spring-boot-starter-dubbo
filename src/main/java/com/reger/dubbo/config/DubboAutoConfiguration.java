@@ -66,7 +66,7 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		DubboProperties dubboProperties = this.getPropertiesConfigurationBean(DubboProperties.targetName, DubboProperties.class);
 		List<ProtocolConfig> protocols = dubboProperties.getProtocols();
 		if(protocols==null)
-			protocols=new ArrayList<>();
+			protocols=new ArrayList<ProtocolConfig>();
 		if(dubboProperties.getProtocol()!=null)
 			protocols.add(dubboProperties.getProtocol());
 		
