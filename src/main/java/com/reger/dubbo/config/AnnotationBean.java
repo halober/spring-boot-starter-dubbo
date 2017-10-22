@@ -272,7 +272,7 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 		}
 		String key = String.format("%s/%s:%s", reference.group(), interfaceName, reference.version());
 		if (!referenceSelfConfigs.containsKey(key)) {
-			referenceSelfConfigs.putIfAbsent(key,  this.initReferenceConfig(reference, referenceClass));
+			referenceSelfConfigs.put(key,  this.initReferenceConfig(reference, referenceClass));
 		}
 		return referenceSelfConfigs.get(key).get();
 	}
