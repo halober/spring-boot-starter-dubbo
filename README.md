@@ -17,6 +17,11 @@ spring-boot-start-dubbo，是spring-boot与dubbo有机结合的桥梁，根据`s
 
 ### 更新记录
 ```
+1.0.7
+发布时间： 2017年10月
+更新内容：
+  1.解决1.0.6在真实jdk1.6环境（相比maven-compiler-plugin指定的jdk环境）下存在的问
+
 1.0.6
 发布时间： 2017年10月19日
 更新内容：
