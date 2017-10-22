@@ -21,7 +21,7 @@ spring-boot-start-dubbo，是spring-boot与dubbo有机结合的桥梁，根据`s
 发布时间： 2017年10月19日
 更新内容：
   1.升级spring-boot版本至1.5.8
-  2.降低jdk依赖至1.7
+  2.降低jdk依赖至1.6
 
 1.0.5
 发布时间： 2017年10月14日
