@@ -162,9 +162,9 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+		super.postProcessBeanDefinitionRegistry(registry);
 		BeanRegistrar.registerInfrastructureBean(registry, InjectAnnotationBeanPostProcessor.BEAN_NAME, InjectAnnotationBeanPostProcessor.class);
 		BeanRegistrar.registerInfrastructureBean(registry, ReferenceAnnotationBeanPostProcessor.BEAN_NAME, ReferenceAnnotationBeanPostProcessor.class);
-		super.postProcessBeanDefinitionRegistry(registry);
 	}
 
 	private void registerConsumer(ConsumerConfig consumer, ConfigurableListableBeanFactory beanFactory) {

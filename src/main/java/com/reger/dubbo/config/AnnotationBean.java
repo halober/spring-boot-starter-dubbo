@@ -49,7 +49,7 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
 
 	private static final Logger logger = LoggerFactory.getLogger(AnnotationBean.class);
 	
-	private BeanDefinitionRegistry registry;
+	protected BeanDefinitionRegistry registry;
 	
 	private ResourceLoader resourceLoader;
 	
