@@ -27,12 +27,10 @@ import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.config.ServiceConfig;
 import com.alibaba.dubbo.config.spring.beans.factory.annotation.InjectAnnotationBeanPostProcessor;
 import com.alibaba.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor;
-import com.alibaba.dubbo.config.spring.context.annotation.DubboComponentScan;
 import com.alibaba.dubbo.config.spring.util.BeanRegistrar;
 import com.reger.dubbo.properties.DubboProperties;
 
 @Configuration
-@DubboComponentScan
 public class DubboAutoConfiguration extends AnnotationBean implements EnvironmentAware {
 
 	public DubboAutoConfiguration()
@@ -90,6 +88,40 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		return registryConfigs;
 	}
 
+	private List<RegistryConfig> getRegistry(List<RegistryConfig> registrys,String environmentName) {
+		String value = environment.getProperty(environmentName);
+		if(StringUtils.isEmpty(value)){
+			return registrys;
+		}
+		String[] vals = value.split(",");
+		List<RegistryConfig> ret=new ArrayList<RegistryConfig>();
+		for (String val : vals) {
+			for (RegistryConfig registryConfig : registrys) {
+				if(val.trim().equals(registryConfig.getId())){
+					ret.add(registryConfig);
+				}
+			}
+		}
+		return ret;
+	}
+
+	private List<ProtocolConfig> getProtocol(List<ProtocolConfig> protocols,String environmentName) {
+		String value = environment.getProperty(environmentName);
+		if(StringUtils.isEmpty(value)){
+			return protocols;
+		}
+		String[] vals = value.split(",");
+		List<ProtocolConfig> ret=new ArrayList<ProtocolConfig>();
+		for (String val : vals) {
+			for (ProtocolConfig protocolConfig : protocols) {
+				if(val.trim().equals(protocolConfig.getId())){
+					ret.add(protocolConfig);
+				}
+			}
+		}
+		return ret;
+	}
+	
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		DubboProperties dubboProperties = this.getPropertiesConfigurationBean(DubboProperties.targetName, DubboProperties.class);
@@ -102,8 +134,26 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		List<RegistryConfig> registryConfigs = this.getRegistrys(dubboProperties);
 		List<ReferenceConfig<?>> references = dubboProperties.getReferences();
 		List<ServiceConfig<?>> services = dubboProperties.getServices();
+		
 		String basePackage = dubboProperties.getBasePackage();
 
+		application.setRegistries(registryConfigs);
+		application.setMonitor(monitor);
+		
+		module.setRegistries(registryConfigs);
+		module.setMonitor(monitor);
+		
+		provider.setApplication(application);
+		provider.setModule(module);
+		provider.setMonitor(monitor);
+		provider.setProtocols(this.getProtocol(protocols, "spring.dubbo.provider.protocol"));
+		provider.setRegistries(this.getRegistry(registryConfigs, "spring.dubbo.provider.registry"));
+		
+		consumer.setApplication(application);
+		consumer.setModule(module);
+		consumer.setMonitor(monitor);
+		consumer.setRegistries(this.getRegistry(registryConfigs, "spring.dubbo.consumer.registry"));
+		
 		this.registerThis(basePackage, beanFactory);
 		this.registerApplication(application, beanFactory);
 		this.registerProtocols(protocols, beanFactory);
