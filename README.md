@@ -17,6 +17,14 @@ spring-boot-start-dubbo，是spring-boot与dubbo有机结合的桥梁，根据`s
 
 ### 更新记录
 ```
+
+1.0.8
+发布时间： 2017年11月13日
+更新内容：
+  1.升级dubbo到依赖到2.5.7
+  2.根据dubbo2.5.7规则重新配置类
+  3.增加多注册中心配置项
+
 1.0.7
 发布时间： 2017年10月22日
 更新内容：
@@ -131,6 +139,15 @@ spring:
       wait: 0               # 可选 性能调优 停止时等待通知完成时间(毫秒) 2.0.0以上版本
       transport: netty      # 可选 性能调优 网络传输方式，可选mina,netty 2.0.0以上版本
       id:                   # 可选 配置关联 注册中心引用BeanId，可以在<dubbo:service registry="">或<dubbo:reference registry="">中引用此ID 1.0.16以上版本
+
+    registrys:               # 多个应用注册中心时配置项（注意，如果要配置多个注册中心，必须指定的不同的id和名字）
+      - id: test2
+        name: test2
+        protocol: zookeeper   # 必填 服务发现 注册中心支持的协议 包括 dubbo,multicast,zookeeper,redis 默认是zookeeper
+        address: 127.0.0.1    # 必填 服务发现 注册中心服务器地址，如果地址没有端口缺省为9090，同一集群内的多个地址用逗号分隔，如：ip:port,ip:port，不同集群的注册中心，请配置多个spring.dubbo.registry.标签 1.0.16以上版本
+        port: 2182            # 可选 服务发现 注册中心缺省端口，当address没有带端口时使用此端口做为缺省值 2.0.0以上版本
+        client: zkclient      # 可选 服务发现 注册中心支持的客户端， zookeeper 支持客户端包括 curator和zkclient,如果不配置，默认使用zkclient 
+
 ```
 #### 4.服务调用支持的类型（必须配置）
 ```yml
