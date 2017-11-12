@@ -1,310 +1,249 @@
 package com.reger.dubbo.config;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import static org.springframework.beans.factory.support.BeanDefinitionBuilder.rootBeanDefinition;
+import static org.springframework.beans.factory.support.BeanDefinitionReaderUtils.registerWithGeneratedName;
+import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
+import static org.springframework.util.ClassUtils.resolveClassName;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.beans.factory.support.ManagedList;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.Assert;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.FieldCallback;
-import org.springframework.util.ReflectionUtils.MethodCallback;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.dubbo.common.Constants;
-import com.alibaba.dubbo.config.ApplicationConfig;
-import com.alibaba.dubbo.config.ConsumerConfig;
-import com.alibaba.dubbo.config.ModuleConfig;
-import com.alibaba.dubbo.config.MonitorConfig;
+import com.alibaba.dubbo.config.AbstractConfig;
 import com.alibaba.dubbo.config.ProtocolConfig;
-import com.alibaba.dubbo.config.ProviderConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
-import com.alibaba.dubbo.config.ServiceConfig;
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
-import com.alibaba.dubbo.config.spring.ReferenceBean;
 import com.alibaba.dubbo.config.spring.ServiceBean;
-import com.reger.dubbo.annotation.Inject;
+import com.alibaba.dubbo.config.spring.context.annotation.DubboClassPathBeanDefinitionScanner;
 
-public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBean {
+public class AnnotationBean extends AbstractConfig implements DisposableBean, BeanDefinitionRegistryPostProcessor,
+		ResourceLoaderAware, EnvironmentAware, BeanClassLoaderAware {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger logger = LoggerFactory.getLogger(AnnotationBean.class);
-
-	private final Map<String, ReferenceBean<?>> referenceSelfConfigs;
-
-	private final Set<ServiceConfig<?>> serviceConfigs;
-
-	private ApplicationContext applicationContext;
-
+	
+	private BeanDefinitionRegistry registry;
+	
+	private ResourceLoader resourceLoader;
+	
+	private Environment environment;
+	
+	private ClassLoader classLoader;
+	
 	private String[] annotationPackages;
 
-	@SuppressWarnings("unchecked")
-	public AnnotationBean() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-		super();
-		Field referenceField = com.alibaba.dubbo.config.spring.AnnotationBean.class.getDeclaredField("referenceConfigs");
-		if (!referenceField.isAccessible()) {
-			referenceField.setAccessible(true);
-		}
-		referenceSelfConfigs = (Map<String, ReferenceBean<?>>) referenceField.get(this);
-		referenceField.setAccessible(false);
-		Field serviceField = com.alibaba.dubbo.config.spring.AnnotationBean.class.getDeclaredField("serviceConfigs");
-		if (!serviceField.isAccessible()) {
-			serviceField.setAccessible(true);
-		}
-		serviceConfigs = (Set<ServiceConfig<?>>) serviceField.get(this);
-		serviceField.setAccessible(false);
-
+	@Override
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
 	}
 
 	@Override
+	public void setResourceLoader(ResourceLoader resourceLoader) {
+		this.resourceLoader = resourceLoader;
+	}
+
+	@Override
+	public void setBeanClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
+
+	@Override
+	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+		this.registry = registry;
+	}
+
+	@Override
+	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+
+	}
+
 	public void setPackage(String annotationPackage) {
-		super.setPackage(annotationPackage);
-		this.annotationPackages = (annotationPackage == null || annotationPackage.length() == 0) ? null : Constants.COMMA_SPLIT_PATTERN.split(annotationPackage);
-	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-		super.setApplicationContext(applicationContext);
-	}
-
-	@Override
-	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-		if (!isMatchPackage(bean)) {
-			return bean;
-		}
-		Class<?> clazs = this.getOriginalClass(bean);
-		Service service = clazs.getAnnotation(Service.class);
-		if (service != null) {
-			if (void.class.equals(service.interfaceClass()) && "".equals(service.interfaceName())) {
-				Class<?>[] interfaces = clazs.getInterfaces();
-				Assert.notEmpty(interfaces, "Failed to export remote service class " + clazs.getName() + ", cause: The @Service undefined interfaceClass or interfaceName, and the service class unimplemented any interfaces.");
-				for (Class<?> interfaceClass : interfaces) {
-					this.export(bean, service, interfaceClass);
-					logger.debug("dubbo成功将{}以{}方式导出", beanName, interfaceClass);
-				}
-			} else {
-				this.export(bean, service, null);
-			}
-		}
-		return bean;
-	}
-
-	private void export(Object bean, Service service, Class<?> interfaceClass) {
-		ServiceBean<Object> serviceConfig = new ServiceBean<Object>(service);
-		if (interfaceClass != null) {
-			serviceConfig.setInterface(interfaceClass);
-		}
-		if (applicationContext != null) {
-			serviceConfig.setApplicationContext(applicationContext);
-			if (service.registry() != null && service.registry().length > 0) {
-				serviceConfig.setRegistries(this.getRegistryConfigs(service.registry()));
-			}
-			if (service.provider() != null && service.provider().length() > 0) {
-				serviceConfig.setProvider(this.getBean(service.provider(), ProviderConfig.class));
-			}
-			if (service.monitor() != null && service.monitor().length() > 0) {
-				serviceConfig.setMonitor(this.getBean(service.monitor(), MonitorConfig.class));
-			}
-			if (service.application() != null && service.application().length() > 0) {
-				serviceConfig.setApplication(this.getBean(service.application(), ApplicationConfig.class));
-			}
-			if (service.module() != null && service.module().length() > 0) {
-				serviceConfig.setModule(this.getBean(service.module(), ModuleConfig.class));
-			}
-			if (service.provider() != null && service.provider().length() > 0) {
-				serviceConfig.setProvider(this.getBean(service.provider(), ProviderConfig.class));
-			}
-			if (service.protocol() != null && service.protocol().length > 0) {
-				serviceConfig.setProtocols(this.getProtocolConfigs(service.protocol()));
-			}
-			this.InitializingBean(serviceConfig);
-		}
-		serviceConfig.setRef(bean);
-		serviceConfigs.add(serviceConfig);
-		serviceConfig.export();
-	}
-
-	private void InitializingBean(org.springframework.beans.factory.InitializingBean bean) {
-		try {
-			bean.afterPropertiesSet();
-		} catch (RuntimeException e) {
-			throw (RuntimeException) e;
-		} catch (Exception e) {
-			throw new IllegalStateException(e.getMessage(), e);
+		if (StringUtils.hasText(annotationPackage)) {
+			this.annotationPackages = trims(annotationPackage);
+		} else {
+			this.annotationPackages = new String[] {};
 		}
 	}
 
-	private List<ProtocolConfig> getProtocolConfigs(String[] protocols) {
-		List<ProtocolConfig> protocolConfigs = new ArrayList<ProtocolConfig>();
-		for (String protocolId : protocols) {
-			if (protocolId != null && protocolId.length() > 0) {
-				protocolConfigs.add(this.getBean(protocolId, ProtocolConfig.class));
-			}
+	protected void postProcessAnnotationPackageService() {
+		if (this.annotationPackages.length == 0) {
+			return;
 		}
-		return protocolConfigs;
-	}
-
-	private List<RegistryConfig> getRegistryConfigs(String[] registrys) {
-		List<RegistryConfig> registryConfigs = new ArrayList<RegistryConfig>();
-		for (String registryId : registrys) {
-			if (registryId != null && registryId.length() > 0) {
-				registryConfigs.add(this.getBean(registryId, RegistryConfig.class));
-			}
+		DubboClassPathBeanDefinitionScanner dubboClassPathBeanDefinitionScanner = new DubboClassPathBeanDefinitionScanner( registry, environment, resourceLoader);
+		dubboClassPathBeanDefinitionScanner.addIncludeFilter(new AnnotationTypeFilter(Service.class));
+		Set<BeanDefinitionHolder> beanDefinitionHolders = dubboClassPathBeanDefinitionScanner .doScan(this.annotationPackages);
+		for (BeanDefinitionHolder beanDefinitionHolder : beanDefinitionHolders) {
+			registerServiceBean(beanDefinitionHolder, registry);
 		}
-		return registryConfigs;
-	}
-
-	private <T> T getBean(String name, Class<T> clazz) {
-		return (T) applicationContext.getBean(name, clazz);
-	}
-
-	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		if (!isMatchPackage(bean)) {
-			return bean;
-		}
-		this.buildMethod(bean);
-		this.buildField(bean);
-		return bean;
-	}
-
-	private void buildField(final Object bean) {
-		ReflectionUtils.doWithFields(this.getOriginalClass(bean),new FieldCallback() {
-			@Override
-			public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
-				try {
-					if (!field.isAccessible()) {
-						field.setAccessible(true);
-					}
-					Inject inject = field.getAnnotation(Inject.class);
-					Class<?> type = field.getType();
-					if (inject != null) {
-						field.set(bean, AnnotationBean.this.refer(inject, type));
-					} else {
-						Reference reference = field.getAnnotation(Reference.class);
-						if (reference != null) {
-							field.set(bean, AnnotationBean.this.refer(reference, type));
-						}
-					}
-				} catch (Throwable e) {
-					logger.error("Failed to init remote service reference at filed {} in class {}, cause: {}", field.getName(), AnnotationBean.this.getOriginalClass(bean).getName(), e.getMessage(), e);
-					throw new BeanInitializationException("Failed to init remote service reference at filed " + field.getName() + " in class " + bean.getClass().getName(), e);
-				}
-			
-			}
-		});  
-	}
-
-	private void buildMethod(final Object bean) {
-		ReflectionUtils.doWithMethods(this.getOriginalClass(bean), new MethodCallback() {
-			
-			@Override
-			public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
-
-				if (method.getParameterTypes().length == 1 && Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers())) {
-					try {
-						Inject inject = method.getAnnotation(Inject.class);
-						Class<?> type = method.getParameterTypes()[0];
-						if (inject != null) {
-							method.invoke(bean, new Object[] { AnnotationBean.this.refer(inject, type) });
-						} else {
-							Reference reference = method.getAnnotation(Reference.class);
-							if (reference != null) {
-								method.invoke(bean, new Object[] { AnnotationBean.this.refer(reference, type) });
-							}
-						}
-					} catch (Throwable e) {
-						logger.error("Failed to init remote service reference at method {} in class {}, cause: {}", method.getName(), AnnotationBean.this.getOriginalClass(bean).getName(), e.getMessage(), e);
-						throw new BeanInitializationException("Failed to init remote service reference at method " + method.getName() + " in class " + bean.getClass().getName(), e);
-					}
-				}
-
-			}
-		}); 
+		logger.info("{} annotated @Service Components { {} } were scanned under package[{}]", beanDefinitionHolders.size(), beanDefinitionHolders, this.annotationPackages);
 	}
 
 	/**
-	 * 如果可以直接从spring容器加载，就不从dubbo容器加载
-	 * 
-	 * @param inject 注入的注解参数
-	 * @param referenceClass 需要注入的类类型
-	 * @return 注入的类实例
+	 * Registers {@link ServiceBean} from new annotated {@link Service}
+	 * {@link BeanDefinition}
+	 *
+	 * @param beanDefinitionHolder
+	 * @param registry
+	 * @see ServiceBean
+	 * @see BeanDefinition
 	 */
-	protected Object refer(Inject inject, Class<?> referenceClass) {
-		try {
-			String beanName = inject.name().trim();
-			if (beanName.isEmpty()) {
-				Object obj = applicationContext.getBean(referenceClass);
-				if (obj != null)
-					return obj;
-			} else {
-				Object obj = this.getBean(beanName, referenceClass);
-				if (obj != null)
-					return obj;
+	private void registerServiceBean(BeanDefinitionHolder beanDefinitionHolder, BeanDefinitionRegistry registry) {
+		Class<?> beanClass = resolveClass(beanDefinitionHolder);
+		Service service = findAnnotation(beanClass, Service.class);
+		Class<?> interfaceClass = resolveServiceInterfaceClass(beanClass, service);
+		String beanName = beanDefinitionHolder.getBeanName();
+		if(interfaceClass==null){
+			Class<?>[] interfacess = beanClass.getInterfaces();
+			Assert.isTrue(interfacess.length!=0, beanClass+"没有实现任何接口，不可以发布服务");
+			for (Class<?> interfaces : interfacess) {
+				AbstractBeanDefinition serviceBeanDefinition = buildServiceBeanDefinition(service, interfaces, beanName);
+				registerWithGeneratedName(serviceBeanDefinition, registry);
 			}
-		} catch (BeansException e) {
-			logger.debug("从spring上下文无法正确注入{}，将从dubbo中加载  , Error Message:{}", referenceClass, e.getMessage(), e);
 		}
-		return refer(inject.value(), referenceClass);
+		AbstractBeanDefinition serviceBeanDefinition = buildServiceBeanDefinition(service, interfaceClass, beanName);
+		registerWithGeneratedName(serviceBeanDefinition, registry);
 	}
 
-	protected Object refer(Reference reference, Class<?> referenceClass) { // method.getParameterTypes()[0]
-		String interfaceName;
-		if (!"".equals(reference.interfaceName())) {
-			interfaceName = reference.interfaceName();
-		} else if (!void.class.equals(reference.interfaceClass())) {
-			interfaceName = reference.interfaceClass().getName();
-		} else if (referenceClass.isInterface()) {
-			interfaceName = referenceClass.getName();
-		} else {
-			throw new IllegalStateException( "The @Reference undefined interfaceClass or interfaceName, and the property type " + referenceClass.getName() + " is not a interface.");
+	private ManagedList<RuntimeBeanReference> toRuntimeBeanReferences(String... beanNames) {
+		ManagedList<RuntimeBeanReference> runtimeBeanReferences = new ManagedList<RuntimeBeanReference>();
+		if (!ObjectUtils.isEmpty(beanNames)) {
+			for (String beanName : beanNames) {
+				runtimeBeanReferences.add(new RuntimeBeanReference(beanName));
+			}
 		}
-		String key = String.format("%s/%s:%s", reference.group(), interfaceName, reference.version());
-		if (!referenceSelfConfigs.containsKey(key)) {
-			referenceSelfConfigs.put(key,  this.initReferenceConfig(reference, referenceClass));
-		}
-		return referenceSelfConfigs.get(key).get();
+		return runtimeBeanReferences;
 	}
 
-	private ReferenceBean<?> initReferenceConfig(Reference reference, Class<?> referenceClass) {
-		ReferenceBean<?> referenceConfig = new ReferenceBean<Object>(reference);
-		if (void.class.equals(reference.interfaceClass()) && "".equals(reference.interfaceName()) && referenceClass.isInterface()) {
-			referenceConfig.setInterface(referenceClass);
+	private AbstractBeanDefinition buildServiceBeanDefinition(Service service, Class<?> interfaceClass,
+			String annotatedServiceBeanName) {
+		BeanDefinitionBuilder builder = 
+				rootBeanDefinition(ServiceBean.class)
+				.addConstructorArgValue(service)
+				.addPropertyReference("ref", annotatedServiceBeanName)
+				.addPropertyValue("interfaceClass", interfaceClass);
+		/**
+		 * Add {@link com.alibaba.dubbo.config.ProviderConfig} Bean reference
+		 */
+		String providerConfigBeanName = service.provider();
+		if (StringUtils.hasText(providerConfigBeanName)) {
+			builder.addPropertyReference("provider", providerConfigBeanName);
 		}
-		if (applicationContext != null) {
-			referenceConfig.setApplicationContext(applicationContext);
-			if (reference.registry() != null && reference.registry().length > 0) {
-				referenceConfig.setRegistries(this.getRegistryConfigs(reference.registry()));
-			}
-			if (reference.consumer() != null && reference.consumer().length() > 0) {
-				referenceConfig.setConsumer(this.getBean(reference.consumer(), ConsumerConfig.class));
-			}
-			if (reference.monitor() != null && reference.monitor().length() > 0) {
-				referenceConfig.setMonitor(this.getBean(reference.monitor(), MonitorConfig.class));
-			}
-			if (reference.application() != null && reference.application().length() > 0) {
-				referenceConfig.setApplication(this.getBean(reference.application(), ApplicationConfig.class));
-			}
-			if (reference.module() != null && reference.module().length() > 0) {
-				referenceConfig.setModule(this.getBean(reference.module(), ModuleConfig.class));
-			}
-			if (reference.consumer() != null && reference.consumer().length() > 0) {
-				referenceConfig.setConsumer(this.getBean(reference.consumer(), ConsumerConfig.class));
-			}
-			this.InitializingBean(referenceConfig);
+		/**
+		 * Add {@link com.alibaba.dubbo.config.MonitorConfig} Bean reference
+		 */
+		String monitorConfigBeanName = service.monitor();
+		if (StringUtils.hasText(monitorConfigBeanName)) {
+			builder.addPropertyReference("monitor", monitorConfigBeanName);
 		}
-		return referenceConfig;
+		/**
+		 * Add {@link com.alibaba.dubbo.config.ApplicationConfig} Bean reference
+		 */
+		String applicationConfigBeanName = service.application();
+		if (StringUtils.hasText(applicationConfigBeanName)) {
+			builder.addPropertyReference("application", applicationConfigBeanName);
+		}
+		/**
+		 * Add {@link com.alibaba.dubbo.config.ModuleConfig} Bean reference
+		 */
+		String moduleConfigBeanName = service.module();
+		if (StringUtils.hasText(moduleConfigBeanName)) {
+			builder.addPropertyReference("application", moduleConfigBeanName);
+		}
+		/**
+		 * Add {@link com.alibaba.dubbo.config.RegistryConfig} Bean reference
+		 */
+		String[] registryConfigBeanNames = service.registry();
+		List<RuntimeBeanReference> registryRuntimeBeanReferences = toRuntimeBeanReferences(registryConfigBeanNames);
+		if (!registryRuntimeBeanReferences.isEmpty()) {
+			builder.addPropertyValue("registries", registryRuntimeBeanReferences);
+		}
+		/**
+		 * Add {@link com.alibaba.dubbo.config.ProtocolConfig} Bean reference
+		 */
+		String[] protocolConfigBeanNames = service.protocol();
+		List<RuntimeBeanReference> protocolRuntimeBeanReferences = toRuntimeBeanReferences(protocolConfigBeanNames);
+		if (!registryRuntimeBeanReferences.isEmpty()) {
+			builder.addPropertyValue("protocols", protocolRuntimeBeanReferences);
+		}
+		return builder.getBeanDefinition();
+
+	}
+
+	private Class<?> resolveServiceInterfaceClass(Class<?> annotatedServiceBeanClass, Service service) {
+		Class<?> interfaceClass = service.interfaceClass();
+		if (void.class.equals(interfaceClass)) {
+			interfaceClass = null;
+			String interfaceClassName = service.interfaceName();
+			if (StringUtils.hasText(interfaceClassName)) {
+				if (ClassUtils.isPresent(interfaceClassName, classLoader)) {
+					interfaceClass = resolveClassName(interfaceClassName, classLoader);
+				}
+			}
+		}
+		if(interfaceClass==null){
+			return null;
+		}
+		Assert.isTrue(interfaceClass.isInterface(), "The type that was annotated @Service is not an interface!");
+		return interfaceClass;
+	}
+
+
+    private Class<?> resolveClass(BeanDefinitionHolder beanDefinitionHolder) {
+        BeanDefinition beanDefinition = beanDefinitionHolder.getBeanDefinition();
+        return resolveClass(beanDefinition);
+
+    }
+
+    private Class<?> resolveClass(BeanDefinition beanDefinition) {
+        String beanClassName = beanDefinition.getBeanClassName();
+        return resolveClassName(beanClassName, classLoader);
+
+    }
+
+	/**
+	 * 切包名字符串
+	 * 
+	 * @param annotationPackage
+	 *            包名
+	 * @return 切好后的字符串
+	 */
+	private static String[] trims(String annotationPackage) {
+		String[] tmpes = Constants.COMMA_SPLIT_PATTERN.split(annotationPackage);
+		List<String> packages = new ArrayList<String>();
+		for (String tmpe : tmpes) {
+			tmpe = tmpe.trim();
+			if (!tmpe.isEmpty()) {
+				packages.add(tmpe);
+			}
+		}
+		return packages.toArray(new String[] {});
 	}
 
 	/**
@@ -315,7 +254,7 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 	 * @return 是否包含
 	 */
 	protected boolean isMatchPackage(Object bean) {
-		if (annotationPackages == null || annotationPackages.length == 0) {
+		if (annotationPackages.length == 0) {
 			return true;
 		}
 		String beanClassName = this.getOriginalClass(bean).getName();
@@ -335,16 +274,17 @@ public class AnnotationBean extends com.alibaba.dubbo.config.spring.AnnotationBe
 	 * @return bean的原始类型
 	 */
 	private Class<?> getOriginalClass(Object bean) {
-		if (AopUtils.isAopProxy(bean))
+		if (AopUtils.isAopProxy(bean)) {
 			return AopUtils.getTargetClass(bean);
+		}
 		return bean.getClass();
 	}
 
 	@Override
 	public void destroy() throws Exception {
 		logger.info("dubbo开始关闭....");
-		super.destroy();
 		ProtocolConfig.destroyAll();
 		RegistryConfig.destroyAll();
 	}
+
 }
