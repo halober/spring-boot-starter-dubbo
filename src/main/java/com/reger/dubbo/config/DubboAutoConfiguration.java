@@ -88,39 +88,39 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		return registryConfigs;
 	}
 
-	private List<RegistryConfig> getRegistry(List<RegistryConfig> registrys,String environmentName) {
-		String value = environment.getProperty(environmentName);
-		if(StringUtils.isEmpty(value)){
-			return registrys;
-		}
-		String[] vals = value.split(",");
-		List<RegistryConfig> ret=new ArrayList<RegistryConfig>();
-		for (String val : vals) {
-			for (RegistryConfig registryConfig : registrys) {
-				if(val.trim().equals(registryConfig.getId())){
-					ret.add(registryConfig);
-				}
-			}
-		}
-		return ret;
-	}
-
-	private List<ProtocolConfig> getProtocol(List<ProtocolConfig> protocols,String environmentName) {
-		String value = environment.getProperty(environmentName);
-		if(StringUtils.isEmpty(value)){
-			return protocols;
-		}
-		String[] vals = value.split(",");
-		List<ProtocolConfig> ret=new ArrayList<ProtocolConfig>();
-		for (String val : vals) {
-			for (ProtocolConfig protocolConfig : protocols) {
-				if(val.trim().equals(protocolConfig.getId())){
-					ret.add(protocolConfig);
-				}
-			}
-		}
-		return ret;
-	}
+//	private List<RegistryConfig> getRegistry(List<RegistryConfig> registrys,String environmentName) {
+//		String value = environment.getProperty(environmentName);
+//		if(StringUtils.isEmpty(value)){
+//			return registrys;
+//		}
+//		String[] vals = value.split(",");
+//		List<RegistryConfig> ret=new ArrayList<RegistryConfig>();
+//		for (String val : vals) {
+//			for (RegistryConfig registryConfig : registrys) {
+//				if(val.trim().equals(registryConfig.getId())){
+//					ret.add(registryConfig);
+//				}
+//			}
+//		}
+//		return ret;
+//	}
+//
+//	private List<ProtocolConfig> getProtocol(List<ProtocolConfig> protocols,String environmentName) {
+//		String value = environment.getProperty(environmentName);
+//		if(StringUtils.isEmpty(value)){
+//			return protocols;
+//		}
+//		String[] vals = value.split(",");
+//		List<ProtocolConfig> ret=new ArrayList<ProtocolConfig>();
+//		for (String val : vals) {
+//			for (ProtocolConfig protocolConfig : protocols) {
+//				if(val.trim().equals(protocolConfig.getId())){
+//					ret.add(protocolConfig);
+//				}
+//			}
+//		}
+//		return ret;
+//	}
 	
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {

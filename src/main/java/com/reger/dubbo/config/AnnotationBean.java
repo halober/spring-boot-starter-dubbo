@@ -102,7 +102,7 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
 		for (BeanDefinitionHolder beanDefinitionHolder : beanDefinitionHolders) {
 			registerServiceBean(beanDefinitionHolder, registry);
 		}
-		logger.info("{} annotated @Service Components { {} } were scanned under package[{}]", beanDefinitionHolders.size(), beanDefinitionHolders, this.annotationPackages);
+		logger.debug("{} annotated @Service Components { {} } were scanned under package[{}]", beanDefinitionHolders.size(), beanDefinitionHolders, this.annotationPackages);
 	}
 
 	/**
