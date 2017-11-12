@@ -275,26 +275,18 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		}
 	}
 
-	private void registerProtocol(ProtocolConfig protocol, ConfigurableListableBeanFactory beanFactory) {
-		if (protocol == null) {
-			logger.debug("dubbo 没有配置协议,将使用默认协议");
-			return;
-		}
-		String beanName = protocol.getId();
-		if (protocol.getPort() == null || protocol.getPort() == 0) {
-			protocol.setPort(SocketUtils.findAvailableTcpPort(53600, 53688));
-		}
-		beanFactory.registerSingleton(beanName, protocol);
-		logger.debug("注册协议信息{}-ProtocolConfig 完毕", beanName);
-	}
-
 	private void registerProtocols(List<ProtocolConfig> protocols, ConfigurableListableBeanFactory beanFactory) {
 		if (protocols == null || protocols.isEmpty()) {
 			logger.debug("dubbo 没有配置协议,将使用默认协议");
 			return;
 		}
 		for (ProtocolConfig protocol : protocols) {
-			this.registerProtocol(protocol, beanFactory);
+			String beanName = protocol.getId();
+			if (protocol.getPort() == null || protocol.getPort() == 0) {
+				protocol.setPort(SocketUtils.findAvailableTcpPort(53600, 53688));
+			}
+			beanFactory.registerSingleton(beanName, protocol);
+			logger.debug("注册协议信息{}-ProtocolConfig 完毕", beanName);
 		}
 	}
 
