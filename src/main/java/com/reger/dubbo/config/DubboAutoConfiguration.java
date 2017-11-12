@@ -33,12 +33,11 @@ import com.reger.dubbo.properties.DubboProperties;
 @Configuration
 public class DubboAutoConfiguration extends AnnotationBean implements EnvironmentAware {
 
-	public DubboAutoConfiguration()
-			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+	public DubboAutoConfiguration() {
 		super();
 	}
 
-	static Logger logger = LoggerFactory.getLogger(DubboAutoConfiguration.class);
+	private final static Logger logger = LoggerFactory.getLogger(DubboAutoConfiguration.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -137,30 +136,14 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		List<ServiceConfig<?>> services = dubboProperties.getServices();
 		
 		String basePackage = dubboProperties.getBasePackage();
-
-		if(application!=null){
-			application.setRegistries(registryConfigs);
-			application.setMonitor(monitor);
-		}
-		
-		if(module!=null){
-			module.setMonitor(monitor);
-			module.setRegistries(registryConfigs);
-		}
 		
 		if(provider!=null){
-			provider.setApplication(application);
-			provider.setModule(module);
-			provider.setMonitor(monitor);
-			provider.setProtocols(this.getProtocol(protocols, "spring.dubbo.provider.protocol"));
-			provider.setRegistries(this.getRegistry(registryConfigs, "spring.dubbo.provider.registry"));
+//			provider.setProtocols(this.getProtocol(protocols, "spring.dubbo.provider.protocol"));
+//			provider.setRegistries(this.getRegistry(registryConfigs, "spring.dubbo.provider.registry"));
 		}
 		
 		if(consumer!=null){
-			consumer.setApplication(application);
-			consumer.setModule(module);
-			consumer.setMonitor(monitor);
-			consumer.setRegistries(this.getRegistry(registryConfigs, "spring.dubbo.consumer.registry"));
+//			consumer.setRegistries(this.getRegistry(registryConfigs, "spring.dubbo.consumer.registry"));
 		}
 		
 		this.registerThis(basePackage, beanFactory);

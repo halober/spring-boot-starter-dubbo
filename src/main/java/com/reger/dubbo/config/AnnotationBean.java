@@ -98,7 +98,7 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
 		}
 		DubboClassPathBeanDefinitionScanner dubboClassPathBeanDefinitionScanner = new DubboClassPathBeanDefinitionScanner( registry, environment, resourceLoader);
 		dubboClassPathBeanDefinitionScanner.addIncludeFilter(new AnnotationTypeFilter(Service.class));
-		Set<BeanDefinitionHolder> beanDefinitionHolders = dubboClassPathBeanDefinitionScanner .doScan(this.annotationPackages);
+		Set<BeanDefinitionHolder> beanDefinitionHolders = dubboClassPathBeanDefinitionScanner.doScan(this.annotationPackages);
 		for (BeanDefinitionHolder beanDefinitionHolder : beanDefinitionHolders) {
 			registerServiceBean(beanDefinitionHolder, registry);
 		}
