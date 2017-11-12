@@ -137,22 +137,30 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 		
 		String basePackage = dubboProperties.getBasePackage();
 
-		application.setRegistries(registryConfigs);
-		application.setMonitor(monitor);
+		if(application!=null){
+			application.setRegistries(registryConfigs);
+			application.setMonitor(monitor);
+		}
 		
-		module.setRegistries(registryConfigs);
-		module.setMonitor(monitor);
+		if(module!=null){
+			module.setMonitor(monitor);
+			module.setRegistries(registryConfigs);
+		}
 		
-		provider.setApplication(application);
-		provider.setModule(module);
-		provider.setMonitor(monitor);
-		provider.setProtocols(this.getProtocol(protocols, "spring.dubbo.provider.protocol"));
-		provider.setRegistries(this.getRegistry(registryConfigs, "spring.dubbo.provider.registry"));
+		if(provider!=null){
+			provider.setApplication(application);
+			provider.setModule(module);
+			provider.setMonitor(monitor);
+			provider.setProtocols(this.getProtocol(protocols, "spring.dubbo.provider.protocol"));
+			provider.setRegistries(this.getRegistry(registryConfigs, "spring.dubbo.provider.registry"));
+		}
 		
-		consumer.setApplication(application);
-		consumer.setModule(module);
-		consumer.setMonitor(monitor);
-		consumer.setRegistries(this.getRegistry(registryConfigs, "spring.dubbo.consumer.registry"));
+		if(consumer!=null){
+			consumer.setApplication(application);
+			consumer.setModule(module);
+			consumer.setMonitor(monitor);
+			consumer.setRegistries(this.getRegistry(registryConfigs, "spring.dubbo.consumer.registry"));
+		}
 		
 		this.registerThis(basePackage, beanFactory);
 		this.registerApplication(application, beanFactory);
