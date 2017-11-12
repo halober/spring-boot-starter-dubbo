@@ -126,9 +126,10 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
 				AbstractBeanDefinition serviceBeanDefinition = buildServiceBeanDefinition(service, interfaces, beanName);
 				registerWithGeneratedName(serviceBeanDefinition, registry);
 			}
+		}else{
+			AbstractBeanDefinition serviceBeanDefinition = buildServiceBeanDefinition(service, interfaceClass, beanName);
+			registerWithGeneratedName(serviceBeanDefinition, registry);
 		}
-		AbstractBeanDefinition serviceBeanDefinition = buildServiceBeanDefinition(service, interfaceClass, beanName);
-		registerWithGeneratedName(serviceBeanDefinition, registry);
 	}
 
 	private ManagedList<RuntimeBeanReference> toRuntimeBeanReferences(String... beanNames) {

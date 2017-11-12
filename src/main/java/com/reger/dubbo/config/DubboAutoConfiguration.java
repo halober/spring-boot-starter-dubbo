@@ -46,10 +46,11 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 
 	@Override
 	public void setEnvironment(Environment environment) {
+		super.setEnvironment(environment);
 		this.environment = (ConfigurableEnvironment) environment;
 	}
 
-	public <T> T getPropertiesConfigurationBean(String targetName, Class<T> types) {
+	private <T> T getPropertiesConfigurationBean(String targetName, Class<T> types) {
 		PropertiesConfigurationFactory<T> factory = new PropertiesConfigurationFactory<T>(types);
 		factory.setPropertySources(environment.getPropertySources());
 		factory.setConversionService(environment.getConversionService());
@@ -178,9 +179,9 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-		super.postProcessBeanDefinitionRegistry(registry);
 		BeanRegistrar.registerInfrastructureBean(registry, InjectAnnotationBeanPostProcessor.BEAN_NAME, InjectAnnotationBeanPostProcessor.class);
 		BeanRegistrar.registerInfrastructureBean(registry, ReferenceAnnotationBeanPostProcessor.BEAN_NAME, ReferenceAnnotationBeanPostProcessor.class);
+		super.postProcessBeanDefinitionRegistry(registry);
 	}
 
 	private void registerConsumer(ConsumerConfig consumer, ConfigurableListableBeanFactory beanFactory) {
