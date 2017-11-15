@@ -10,7 +10,6 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.bind.PropertiesConfigurationFactory;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.util.SocketUtils;
@@ -30,7 +29,6 @@ import com.alibaba.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotat
 import com.alibaba.dubbo.config.spring.util.BeanRegistrar;
 import com.reger.dubbo.properties.DubboProperties;
 
-@Configuration
 public class DubboAutoConfiguration extends AnnotationBean implements EnvironmentAware {
 
 	public DubboAutoConfiguration() {
@@ -211,20 +209,19 @@ public class DubboAutoConfiguration extends AnnotationBean implements Environmen
 			String beanName = referenceConfig.getId() ;
 			beanFactory.registerSingleton(beanName+ "-ReferenceConfig", referenceConfig);
 			beanFactory.registerSingleton(beanName, referenceConfig.get());
-			logger.debug("注册调用信息{} 完毕", beanName);
+			logger.debug("注册服务调用信息{} 完毕", beanName);
 		}
 	}
 
 	private void registerServices(List<ServiceConfig<?>> services, ConfigurableListableBeanFactory beanFactory) {
 		if (services == null || services.isEmpty()) {
-			logger.warn("dubbo 没有配置注册中心");
 			return;
 		}
 		for (ServiceConfig<?> serviceConfig : services) {
 			String beanName = serviceConfig.getId();
 			beanFactory.registerSingleton(beanName + "-ServiceConfig", serviceConfig);
 			serviceConfig.export();
-			logger.debug("注册服务信息{} 完毕", beanName);
+			logger.debug("注册发布服务{} 完毕", beanName);
 		}
 	}
 

@@ -47,7 +47,7 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = LoggerFactory.getLogger(AnnotationBean.class);
+	private final Logger logger = LoggerFactory.getLogger(AnnotationBean.class);
 	
 	protected BeanDefinitionRegistry registry;
 	
@@ -235,7 +235,7 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
 	 *            包名
 	 * @return 切好后的字符串
 	 */
-	private static String[] trims(String annotationPackage) {
+	private String[] trims(String annotationPackage) {
 		String[] tmpes = Constants.COMMA_SPLIT_PATTERN.split(annotationPackage);
 		List<String> packages = new ArrayList<String>();
 		for (String tmpe : tmpes) {
