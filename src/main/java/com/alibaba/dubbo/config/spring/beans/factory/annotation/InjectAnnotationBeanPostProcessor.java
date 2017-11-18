@@ -38,13 +38,6 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.spring.ReferenceBean;
 import com.reger.dubbo.annotation.Inject;
 
-/**
- * {@link org.springframework.beans.factory.config.BeanPostProcessor} implementation
- * that Consumer service {@link Reference} annotated fields
- *
- * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
- * @since 2.5.7
- */
 public class InjectAnnotationBeanPostProcessor extends InstantiationAwareBeanPostProcessorAdapter
 implements BeanFactoryAware, MergedBeanDefinitionPostProcessor, PriorityOrdered, ApplicationContextAware, BeanClassLoaderAware,
         DisposableBean {
@@ -87,12 +80,6 @@ implements BeanFactoryAware, MergedBeanDefinitionPostProcessor, PriorityOrdered,
     }
 
 
-    /**
-     * Finds {@link InjectionMetadata.InjectedElement} Metadata from annotated {@link Reference @Reference} fields
-     *
-     * @param beanClass The {@link Class} of Bean
-     * @return non-null {@link List}
-     */
     private List<InjectionMetadata.InjectedElement> findFieldReferenceMetadata(final Class<?> beanClass) {
 
         final List<InjectionMetadata.InjectedElement> elements = new LinkedList<InjectionMetadata.InjectedElement>();
@@ -124,12 +111,6 @@ implements BeanFactoryAware, MergedBeanDefinitionPostProcessor, PriorityOrdered,
 
     }
 
-    /**
-     * Finds {@link InjectionMetadata.InjectedElement} Metadata from annotated {@link Reference @Reference} methods
-     *
-     * @param beanClass The {@link Class} of Bean
-     * @return non-null {@link List}
-     */
     private List<InjectionMetadata.InjectedElement> findMethodReferenceMetadata(final Class<?> beanClass) {
 
         final List<InjectionMetadata.InjectedElement> elements = new LinkedList<InjectionMetadata.InjectedElement>();
@@ -192,10 +173,6 @@ implements BeanFactoryAware, MergedBeanDefinitionPostProcessor, PriorityOrdered,
 	}
 
 
-    /**
-     * @param beanClass
-     * @return
-     */
     private InjectionMetadata buildReferenceMetadata(final Class<?> beanClass) {
 
         final List<InjectionMetadata.InjectedElement> elements = new LinkedList<InjectionMetadata.InjectedElement>();
@@ -286,9 +263,6 @@ implements BeanFactoryAware, MergedBeanDefinitionPostProcessor, PriorityOrdered,
         this.classLoader = classLoader;
     }
 
-    /**
-     * {@link Reference} {@link Method} {@link InjectionMetadata.InjectedElement}
-     */
     private class ReferenceMethodElement extends InjectionMetadata.InjectedElement {
 
         private final Method method;
@@ -316,9 +290,6 @@ implements BeanFactoryAware, MergedBeanDefinitionPostProcessor, PriorityOrdered,
 
     }
 
-    /**
-     * {@link Reference} {@link Field} {@link InjectionMetadata.InjectedElement}
-     */
     private class ReferenceFieldElement extends InjectionMetadata.InjectedElement {
 
         private final Field field;
@@ -368,14 +339,6 @@ implements BeanFactoryAware, MergedBeanDefinitionPostProcessor, PriorityOrdered,
         return referenceBean.get();
     }
 
-
-    /**
-     * Generate a cache key of {@link ReferenceBean}
-     *
-     * @param reference {@link Reference}
-     * @param beanClass {@link Class}
-     * @return
-     */
     private static String generateReferenceBeanCacheKey(Reference reference, Class<?> beanClass) {
 
         String interfaceName = resolveInterfaceName(reference, beanClass);
