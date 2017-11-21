@@ -1,5 +1,7 @@
 package com.reger.dubbo.rpc.filter;
 
+import java.util.List;
+
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.Result;
@@ -7,20 +9,26 @@ import com.alibaba.dubbo.rpc.Result;
 public class ProceedingJoinPoint {
 	private final Invoker<?> invoker;
 	private final Invocation invocation;
-	private final ProceedingJoinPoint point;
-	
-	protected ProceedingJoinPoint(Invoker<?> invoker, Invocation invocation, ProceedingJoinPoint point) {
+	private final List<? extends RpcFilter> rpcFilters;
+	private volatile int index = 0;
+	private volatile int rpcFilterSize = 0;
+
+	protected ProceedingJoinPoint(Invoker<?> invoker, Invocation invocation, List<? extends RpcFilter> rpcFilters) {
 		super();
 		this.invoker = invoker;
 		this.invocation = invocation;
-		this.point = point;
+		this.rpcFilters = rpcFilters;
+		if (this.rpcFilters != null) {
+			this.rpcFilterSize = this.rpcFilters.size();
+		}
 	}
-	
+
 	public Result proceed() {
-		if(point==null){
+		if (index >= rpcFilterSize) {
 			return invoker.invoke(invocation);
-		}else{
-			return point.proceed();
+		} else {
+			RpcFilter rpcFilter = rpcFilters.get(index++);
+			return rpcFilter.invoke(this);
 		}
 	}
 

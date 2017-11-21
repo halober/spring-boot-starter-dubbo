@@ -2,6 +2,7 @@ package com.reger.dubbo.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -335,14 +336,14 @@ public class DubboAutoConfiguration extends AnnotationBean
 	@Override
 	public void run(String... args) throws Exception {
 		try {
-			ConsumerFilter consumerFilter = applicationContext.getBean(ConsumerFilter.class);
-			ConsumerFilterBean.setConsumerFilter(consumerFilter);
+			Map<String, ConsumerFilter> consumerFilters = applicationContext.getBeansOfType(ConsumerFilter.class);
+			ConsumerFilterBean.setConsumerFilter(consumerFilters);
 		} catch (NoSuchBeanDefinitionException e) {
 			logger.debug("没有ConsumerFilter");
 		}
 		try {
-			ProviderFilter providerFilter = applicationContext.getBean(ProviderFilter.class);
-			ProviderFilterBean.setProviderFilter(providerFilter);
+			Map<String, ProviderFilter> providerFilters = applicationContext.getBeansOfType(ProviderFilter.class);
+			ProviderFilterBean.setProviderFilter(providerFilters);
 		} catch (NoSuchBeanDefinitionException e) {
 			logger.debug("没有ProviderFilter");
 		}
