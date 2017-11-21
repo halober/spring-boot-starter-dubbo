@@ -15,26 +15,27 @@ public class ProceedingJoinPoint {
 
 	private final Invoker<?> invoker;
 	private final Invocation invocation;
-	private final List<? extends RpcFilter> rpcFilters;
+	private final List<? extends RpcFilter> filters;
 	private volatile int index = 0;
-	private volatile int rpcFilterSize = 0;
+	private volatile int filterCount = 0;
 
 	protected ProceedingJoinPoint(Invoker<?> invoker, Invocation invocation, List<? extends RpcFilter> rpcFilters) {
 		super();
 		this.invoker = invoker;
 		this.invocation = invocation;
-		this.rpcFilters = rpcFilters;
-		if (this.rpcFilters != null) {
-			this.rpcFilterSize = this.rpcFilters.size();
+		this.filters = rpcFilters;
+		if (this.filters != null) {
+			this.filterCount = this.filters.size();
 		}
 	}
 
 	public Result proceed() {
-		log.debug("注册了{}个过滤器，当前调用第{}个,过滤器通过beanName排序",rpcFilterSize,index);
-		if (index >= rpcFilterSize) {
+		if (index >= filterCount) {
+			log.debug("过滤器调用完毕，开始执行真实调用 ,  {}", invoker.getInterface());
 			return invoker.invoke(invocation);
 		} else {
-			RpcFilter rpcFilter = rpcFilters.get(index++);
+			log.debug("注册了{}个过滤器，当前调用第{}个,过滤器通过beanName排序",filterCount,index);
+			RpcFilter rpcFilter = filters.get(index++);
 			return rpcFilter.invoke(this);
 		}
 	}
