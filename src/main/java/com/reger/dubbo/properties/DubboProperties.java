@@ -25,7 +25,18 @@ public class DubboProperties {
 	 * 应用注册中心
 	 */
 	private RegistryConfig registry = new RegistryConfig();
-
+	/**
+	 * 注解所在的包,多个用逗号分割
+	 */
+	private String basePackage;
+	/**
+	 * 公用的生产者配置
+	 */
+	private ProviderConfig provider = new ProviderConfig();
+	/**
+	 * 公用的消费者配置
+	 */
+	private ConsumerConfig consumer = new ConsumerConfig();
 	/**
 	 * 应用注册中心(应用配置中心,当需要配置多个是生效)
 	 */
@@ -38,18 +49,6 @@ public class DubboProperties {
 	 * 监控服务
 	 */
 	private MonitorConfig monitor;
-	/**
-	 * 注解所在的包,多个用逗号分割
-	 */
-	private String basePackage;
-	/**
-	 * 公用的生产者配置
-	 */
-	private ProviderConfig provider;
-	/**
-	 * 公用的消费者配置
-	 */
-	private ConsumerConfig consumer;
 	/**
 	 * 应用使用的协议栈
 	 */

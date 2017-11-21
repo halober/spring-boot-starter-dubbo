@@ -338,13 +338,13 @@ public class DubboAutoConfiguration extends AnnotationBean
 			ConsumerFilter consumerFilter = applicationContext.getBean(ConsumerFilter.class);
 			ConsumerFilterBean.setConsumerFilter(consumerFilter);
 		} catch (NoSuchBeanDefinitionException e) {
-			logger.debug("没有设置ConsumerFilter");
+			logger.debug("没有ConsumerFilter");
 		}
 		try {
 			ProviderFilter providerFilter = applicationContext.getBean(ProviderFilter.class);
 			ProviderFilterBean.setProviderFilter(providerFilter);
 		} catch (NoSuchBeanDefinitionException e) {
-			logger.debug("没有设置ProviderFilter");
+			logger.debug("没有ProviderFilter");
 		}
 	}
 
