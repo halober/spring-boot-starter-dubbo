@@ -15,9 +15,13 @@ public class Utils {
 
 	private static final String TRANSFORM_EXCEPTION_MESSAGE = "REGER.DUBBO.RPC.TRANSFORM_EXCEPTION_MESSAGE";
 
-	private static final Set<Class<? extends Exception>> exceptions = new ConcurrentHashSet<Class<? extends Exception>>();
+	private static final Set<Class<? extends Throwable>> exceptions = new ConcurrentHashSet<Class<? extends Throwable>>();
 
-	public final static void register(Class<? extends Exception> claz) {
+	/**
+	 * 注册dubbo可以进行传递的异常
+	 * @param claz 
+	 */
+	public final static void register(Class<? extends Throwable> claz) {
 		exceptions.add(claz);
 	}
 
