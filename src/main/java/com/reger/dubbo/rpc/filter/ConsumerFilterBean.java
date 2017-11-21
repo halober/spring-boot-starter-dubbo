@@ -21,7 +21,8 @@ public class ConsumerFilterBean implements Filter {
 		if (consumerFilter == null) {
 			relust = invoker.invoke(invocation);
 		} else {
-			relust = consumerFilter.invoke(invoker, invocation);
+			ProceedingJoinPoint point= new ProceedingJoinPoint(invoker, invocation, null);
+			relust = consumerFilter.invoke(point);
 		}
 		return Utils.decodeException(relust);
 	}

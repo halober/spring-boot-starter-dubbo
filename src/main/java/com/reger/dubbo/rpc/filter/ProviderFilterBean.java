@@ -22,7 +22,8 @@ public class ProviderFilterBean implements Filter {
 		if (providerFilter == null) {
 			relust = invoker.invoke(invocation);
 		} else {
-			relust = providerFilter.invoke(invoker, invocation);
+			ProceedingJoinPoint point= new ProceedingJoinPoint(invoker, invocation, null);
+			relust = providerFilter.invoke(point);
 		}
 		return Utils.encoderException(relust);
 	}
