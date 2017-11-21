@@ -29,7 +29,8 @@ public class ConsumerFilterBean implements Filter {
 	}
 
 	public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-		ProceedingJoinPoint joinPoint = new ProceedingJoinPoint(invoker, invocation, rpcFilters);
-		return Utils.decodeException(joinPoint.proceed());
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		JoinPoint<?> joinPoint = new ProceedingJoinPoint(invoker, invocation, rpcFilters);
+		return joinPoint.proceed();
 	}
 }

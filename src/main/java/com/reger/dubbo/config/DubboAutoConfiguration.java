@@ -7,10 +7,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.bind.PropertiesConfigurationFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -39,7 +39,7 @@ import com.reger.dubbo.rpc.filter.ProviderFilter;
 import com.reger.dubbo.rpc.filter.ProviderFilterBean;
 
 public class DubboAutoConfiguration extends AnnotationBean
-		implements EnvironmentAware, ApplicationContextAware, CommandLineRunner {
+		implements EnvironmentAware, ApplicationContextAware, InitializingBean {
 
 	public DubboAutoConfiguration() {
 		super();
@@ -292,8 +292,8 @@ public class DubboAutoConfiguration extends AnnotationBean
 	private void registerThis(String basePackages, ConfigurableListableBeanFactory beanFactory) {
 		if (StringUtils.isEmpty(basePackages)) {
 			logger.warn(" dubbo没有配置注解服务所在的目录");
-		}else{
-			logger.info("dubbo开始扫描 {}",basePackages);
+		} else {
+			logger.info("dubbo开始扫描 {}", basePackages);
 		}
 		this.setPackage(basePackages);
 		super.setId("dubboBasePackages");
@@ -336,7 +336,7 @@ public class DubboAutoConfiguration extends AnnotationBean
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void afterPropertiesSet() throws Exception {
 		try {
 			Map<String, ConsumerFilter> consumerFilters = applicationContext.getBeansOfType(ConsumerFilter.class);
 			ConsumerFilterBean.setConsumerFilter(consumerFilters);

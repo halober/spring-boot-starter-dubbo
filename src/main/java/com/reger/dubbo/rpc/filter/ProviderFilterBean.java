@@ -29,7 +29,8 @@ public class ProviderFilterBean implements Filter {
 	}
 
 	public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-		ProceedingJoinPoint joinPoint=new ProceedingJoinPoint(invoker, invocation, rpcFilters);
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		JoinPoint<?> joinPoint = new ProceedingJoinPoint(invoker, invocation, rpcFilters);
 		return Utils.encoderException(joinPoint.proceed());
 	}
 

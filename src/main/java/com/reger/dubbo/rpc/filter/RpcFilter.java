@@ -4,5 +4,5 @@ import com.alibaba.dubbo.rpc.Result;
 
 public interface RpcFilter{
 
-	Result invoke(ProceedingJoinPoint point);
+	Result invoke(JoinPoint<?> point);
 }
