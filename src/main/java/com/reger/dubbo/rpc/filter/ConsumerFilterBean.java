@@ -17,10 +17,12 @@ public class ConsumerFilterBean implements Filter {
 	}
 
 	public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-		if(consumerFilter==null){
-			return invoker.invoke(invocation);
-		}else{
-			return consumerFilter.invoke(invoker, invocation);
+		Result relust;
+		if (consumerFilter == null) {
+			relust = invoker.invoke(invocation);
+		} else {
+			relust = consumerFilter.invoke(invoker, invocation);
 		}
+		return Utils.decodeException(relust);
 	}
 }
