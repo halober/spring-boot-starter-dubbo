@@ -28,8 +28,7 @@ public class Utils {
 	protected final static Result decodeException(Result relust) {
 		if (relust != null && relust.hasException()) {
 			Throwable throwable = relust.getException();
-			if (throwable.getClass().equals(Exception.class)
-					&& TRANSFORM_EXCEPTION_MESSAGE.equals(throwable.getMessage())) {
+			if (throwable.getClass().equals(Exception.class) && TRANSFORM_EXCEPTION_MESSAGE.equals(throwable.getMessage())) {
 				throwable = throwable.getCause();
 				if (throwable != null) {
 					log.debug("被包装的异常{}，解开包装...", throwable.getClass());
