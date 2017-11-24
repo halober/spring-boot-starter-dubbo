@@ -1,5 +1,6 @@
 package com.reger.dubbo.rpc.filter;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ public class ProceedingJoinPoint<T> implements JoinPoint<T> {
 	private final List<? extends RpcFilter> filters;
 	private volatile int index = 0;
 	private volatile int filterCount = 0;
+	private Map<String, Object> attributes=new HashMap<String, Object>();
 
 	protected ProceedingJoinPoint(Invoker<T> invoker, Invocation invocation, List<? extends RpcFilter> rpcFilters) {
 		super();
@@ -99,5 +101,15 @@ public class ProceedingJoinPoint<T> implements JoinPoint<T> {
 	@Override
 	public String getAttachment(String key, String defaultValue) {
 		return invocation.getAttachment(key, defaultValue);
+	}
+
+	@Override
+	public Object getAttribute(String key) {
+		return attributes.get(key);
+	}
+
+	@Override
+	public void setAttribute(String key, Object value) {
+		attributes.put(key, value);
 	}
 }

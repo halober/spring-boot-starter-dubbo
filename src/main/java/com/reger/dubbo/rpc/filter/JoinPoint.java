@@ -8,7 +8,7 @@ import com.alibaba.dubbo.rpc.Result;
 public interface JoinPoint<T> extends Node {
 
 	/**
-	 * 调用真实方法
+	 * 调用下一个过滤器，如果当前是最后一个，就调用具体业务方法
 	 * 
 	 * @return
 	 */
@@ -18,43 +18,68 @@ public interface JoinPoint<T> extends Node {
 	 * 接口信息
 	 */
 	Class<T> getInterface();
-	
-    /**
-     * 方法名
-     * @return
-     */
-    String getMethodName();
 
-    /**
-     * 参数类型
-     * @return
-     */
-    Class<?>[] getParameterTypes();
+	/**
+	 * 方法名
+	 * 
+	 * @return
+	 */
+	String getMethodName();
 
-    /**
-     * 参数名
-     * @return
-     */
-    Object[] getArguments();
+	/**
+	 * 参数类型
+	 * 
+	 * @return
+	 */
+	Class<?>[] getParameterTypes();
 
-    /**
-     * 隐式传参
-     * @return
-     */
-    Map<String, String> getAttachments();
+	/**
+	 * 参数名
+	 * 
+	 * @return
+	 */
+	Object[] getArguments();
 
-    /**
-     * 获取隐式参数
-     * @param key 参数名
-     * @return
-     */
-    String getAttachment(String key);
+	/**
+	 * 隐式传参
+	 * 
+	 * @return
+	 */
+	Map<String, String> getAttachments();
 
-    /**
-     * 获取隐式参数
-     * @param key 参数名
-     * @param defaultValue 参数默认值
-     * @return 
-     */
-    String getAttachment(String key, String defaultValue);
+	/**
+	 * 获取隐式参数
+	 * 
+	 * @param key
+	 *            参数名
+	 * @return
+	 */
+	String getAttachment(String key);
+
+	/**
+	 * 获取隐式参数
+	 * 
+	 * @param key
+	 *            参数名
+	 * @param defaultValue
+	 *            参数默认值
+	 * @return
+	 */
+	String getAttachment(String key, String defaultValue);
+
+	/**
+	 * 获取参数
+	 * 
+	 * @param key
+	 * @return
+	 */
+	Object getAttribute(String key);
+
+	/**
+	 * 设置参数
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	void setAttribute(String key, Object value);
 }
