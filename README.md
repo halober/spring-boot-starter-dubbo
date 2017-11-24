@@ -17,6 +17,12 @@ spring-boot-start-dubbo，是spring-boot与dubbo有机结合的桥梁，根据`s
 
 ### 更新记录
 ```
+1.0.9
+发布时间： 2017年11月21日
+更新内容：
+  1.添加过滤器基类，实现过滤器接口
+  2.dubbo通用业务异常处理
+  3.解决1.0.8发版时错误输出的日志
 
 1.0.8
 发布时间： 2017年11月13日
@@ -95,6 +101,39 @@ git clone https://gitee.com/lei0719/spring-boot-starter-dubbo-example.git
 使用了后端通过jar包发布的rpc协议库，然后与前端app h5 微信交互使用restful api,你或许很有必要使用这个restful文档插件[spring-boot-starter-swagger](https://gitee.com/reger/spring-boot-starter-swagger)
 ###
 
+## 拓展
+#### 1.通用业务异常处理，
+dubbo在处理业务异常时，会把不再接口上描述的，自定义的运行时业务异常，不在同一个包下的业务异常处理成字符串，然后new成一个新的业务异常后返回。这会造成我们的业务代码要处理自定义的业务异常时，不得不再每个接口的方法描述中描述出涉及的业务异常。
+```java
+com.reger.dubbo.rpc.filter.Utils.register(你的异常类.class);  
+```
+你可以使用上边的方法把自定义的业务异常类注入，然后这些业务异常，便不用再接口方法描述中申明了。
+#### 2.dubbo过滤器
+dubbo默认的过滤器，需要根据约定方式进行配置，使用过于麻烦，所以这里通过定义过滤器的基类，拓展过滤器的接口，你只需要让bean实现接口ProviderFilter或者接口ConsumerFilter即可编写自己的业务逻辑。如果同时配置了多个同类型过滤器，将根据beanName判断多个bean的调用顺序。如下
+```java
+@Bean
+public ConsumerFilter consumerFilter1() {
+    return (joinPoint) -> {
+        log.info("调用接口{} ------》》（先打印）" , joinPoint.getInterface());
+        return joinPoint.proceed();  // 该方法用于调用实际业务逻辑
+    };
+}
+@Bean
+public ConsumerFilter consumerFilter2() {
+    return (joinPoint) -> {
+        log.info("调用接口{} ------》》（后打印）" , joinPoint.getInterface());
+        return joinPoint.proceed();  // 该方法用于调用实际业务逻辑
+    };
+}
+
+@Bean
+public ProviderFilter providerFilter() {
+    return (joinPoint) -> {
+        log.info("接口{}被调用 ", joinPoint.getInterface());
+        return joinPoint.proceed(); // 该方法用于调用实际业务逻辑
+    };
+}
+```
 
 ## 可用配置项  
 
