@@ -12,7 +12,7 @@ spring-boot-start-dubbo，是spring-boot与dubbo有机结合的桥梁，根据`s
 
 ## 交流QQ群： 141930386，欢迎加群反馈问题或者提出建议。
 
-#### 本项目在[开源中国](https://gitee.com/reger/spring-boot-starter-dubbo)和[github](https://github.com/halober/spring-boot-starter-dubbo)同步更新，欢迎使用和欢迎提出问题。
+#### 本项目在[开源中国](https://gitee.com/reger/spring-boot-starter-dubbo)和[github](https://github.com/halober/spring-boot-starter-dubbo)同步更新，欢迎使用，欢迎提出意见和建议。
 
 ### 快速入门
 快速入门[点击这里](http://blog.csdn.net/hulei19900322/article/details/78106718)
