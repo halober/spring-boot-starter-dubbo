@@ -17,12 +17,12 @@ import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
@@ -40,9 +40,12 @@ import com.alibaba.dubbo.config.ProtocolConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.dubbo.config.spring.ServiceBean;
+import com.alibaba.dubbo.config.spring.beans.factory.annotation.InjectAnnotationBeanPostProcessor;
+import com.alibaba.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor;
 import com.alibaba.dubbo.config.spring.context.annotation.DubboClassPathBeanDefinitionScanner;
+import com.alibaba.dubbo.config.spring.util.BeanRegistrar;
 
-public class AnnotationBean extends AbstractConfig implements DisposableBean, BeanDefinitionRegistryPostProcessor,
+public class AnnotationBean extends AbstractConfig implements DisposableBean, BeanFactoryPostProcessor,
 		ResourceLoaderAware, EnvironmentAware, BeanClassLoaderAware {
 
 	private static final long serialVersionUID = 1L;
@@ -75,13 +78,10 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
 	}
 
 	@Override
-	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-		this.registry = registry;
-	}
-
-	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-
+		this.registry = (BeanDefinitionRegistry) beanFactory;
+		BeanRegistrar.registerInfrastructureBean(registry, InjectAnnotationBeanPostProcessor.BEAN_NAME, InjectAnnotationBeanPostProcessor.class);
+		BeanRegistrar.registerInfrastructureBean(registry, ReferenceAnnotationBeanPostProcessor.BEAN_NAME, ReferenceAnnotationBeanPostProcessor.class);
 	}
 
 	public void setPackage(String annotationPackage) {
@@ -96,13 +96,13 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
 		if (this.annotationPackages.length == 0) {
 			return;
 		}
-		DubboClassPathBeanDefinitionScanner dubboClassPathBeanDefinitionScanner = new DubboClassPathBeanDefinitionScanner( registry, environment, resourceLoader);
-		dubboClassPathBeanDefinitionScanner.addIncludeFilter(new AnnotationTypeFilter(Service.class));
-		Set<BeanDefinitionHolder> beanDefinitionHolders = dubboClassPathBeanDefinitionScanner.doScan(this.annotationPackages);
-		for (BeanDefinitionHolder beanDefinitionHolder : beanDefinitionHolders) {
-			registerServiceBean(beanDefinitionHolder, registry);
+		DubboClassPathBeanDefinitionScanner definitionScanner = new DubboClassPathBeanDefinitionScanner( registry, environment, resourceLoader);
+		definitionScanner.addIncludeFilter(new AnnotationTypeFilter(Service.class));
+		Set<BeanDefinitionHolder> definitionHolders = definitionScanner.doScan(this.annotationPackages);
+		for (BeanDefinitionHolder definitionHolder : definitionHolders) {
+			registerServiceBean(definitionHolder, registry);
 		}
-		logger.debug("{} annotated @Service Components { {} } were scanned under package[{}]", beanDefinitionHolders.size(), beanDefinitionHolders, this.annotationPackages);
+		logger.debug("{} annotated @Service Components { {} } were scanned under package[{}]", definitionHolders.size(), definitionHolders, this.annotationPackages);
 	}
 
 	/**

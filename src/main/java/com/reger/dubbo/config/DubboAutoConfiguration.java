@@ -10,7 +10,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.bind.PropertiesConfigurationFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -29,9 +28,6 @@ import com.alibaba.dubbo.config.ProviderConfig;
 import com.alibaba.dubbo.config.ReferenceConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.config.ServiceConfig;
-import com.alibaba.dubbo.config.spring.beans.factory.annotation.InjectAnnotationBeanPostProcessor;
-import com.alibaba.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor;
-import com.alibaba.dubbo.config.spring.util.BeanRegistrar;
 import com.reger.dubbo.properties.DubboProperties;
 import com.reger.dubbo.rpc.filter.ConsumerFilter;
 import com.reger.dubbo.rpc.filter.ConsumerFilterBean;
@@ -90,7 +86,7 @@ public class DubboAutoConfiguration extends AnnotationBean
 		if (registryConfigs == null) {
 			registryConfigs = new ArrayList<RegistryConfig>();
 		}
-		if (dubboProperties.getProtocol() != null) {
+		if (dubboProperties.getRegistry() != null) {
 			registryConfigs.add(dubboProperties.getRegistry());
 		}
 		return registryConfigs;
@@ -132,8 +128,7 @@ public class DubboAutoConfiguration extends AnnotationBean
 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-		DubboProperties dubboProperties = this.getPropertiesConfigurationBean(DubboProperties.targetName,
-				DubboProperties.class);
+		DubboProperties dubboProperties = this.getPropertiesConfigurationBean(DubboProperties.targetName, DubboProperties.class);
 		ApplicationConfig application = dubboProperties.getApplication();
 		MonitorConfig monitor = dubboProperties.getMonitor();
 		ModuleConfig module = dubboProperties.getModule();
@@ -167,15 +162,6 @@ public class DubboAutoConfiguration extends AnnotationBean
 		this.registerServices(services, beanFactory);
 		super.postProcessBeanFactory(beanFactory);
 		super.postProcessAnnotationPackageService();
-	}
-
-	@Override
-	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-		super.postProcessBeanDefinitionRegistry(registry);
-		BeanRegistrar.registerInfrastructureBean(registry, InjectAnnotationBeanPostProcessor.BEAN_NAME,
-				InjectAnnotationBeanPostProcessor.class);
-		BeanRegistrar.registerInfrastructureBean(registry, ReferenceAnnotationBeanPostProcessor.BEAN_NAME,
-				ReferenceAnnotationBeanPostProcessor.class);
 	}
 
 	private void registerConsumer(ConsumerConfig consumer, ConfigurableListableBeanFactory beanFactory) {
