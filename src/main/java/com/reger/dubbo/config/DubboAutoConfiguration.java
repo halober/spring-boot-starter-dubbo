@@ -276,13 +276,13 @@ public class DubboAutoConfiguration extends AnnotationBean
 	}
 
 	private void registerThis(String basePackages, ConfigurableListableBeanFactory beanFactory) {
+		super.setId("dubboBasePackages");
 		if (StringUtils.isEmpty(basePackages)) {
-			logger.warn(" dubbo没有配置注解服务所在的目录");
+			logger.info("dubbo没有配置注解服务所在的包路径,如果你使用注解扫描，该日志可忽略。");
 		} else {
-			logger.info("dubbo开始扫描 {}", basePackages);
+			logger.info("dubbo开始扫描: {}", basePackages);
 		}
 		this.setPackage(basePackages);
-		super.setId("dubboBasePackages");
 	}
 
 	private void registerApplication(ApplicationConfig applicationConfig, ConfigurableListableBeanFactory beanFactory) {
