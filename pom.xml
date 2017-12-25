@@ -91,7 +91,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.6</java.version>
-		<dubbo.version>2.5.7</dubbo.version>
+		<dubbo.version>2.5.8</dubbo.version>
 		<curator.version>2.12.0</curator.version>
 		<zkclient.version>0.5</zkclient.version>
 		<netty.version>3.2.10.Final</netty.version>
